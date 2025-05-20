@@ -51,6 +51,9 @@ func SetupDB() error {
 		&Message{},
 		&Session{},
 		&UnreadMessage{},
+		&SlideItem{},
+		&SlideItemLabel{},
+		&SlideAlbumImage{},
 	)
 	if err != nil {
 		return fmt.Errorf("自动迁移数据库表失败: %w", err)

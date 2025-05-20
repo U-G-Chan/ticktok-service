@@ -13,6 +13,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	userHandler := NewUserHandler(db)
 	blogHandler := NewBlogHandler()
 	productHandler := NewProductHandler(db)
+	slideHandler := NewSlideHandler(db)
 
 	// API路由组
 	api := r.Group("/api")
@@ -46,6 +47,24 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 			mall.GET("/products/:id", productHandler.GetProductDetail)
 			// 标签
 			mall.GET("/labels", productHandler.GetLabels)
+		}
+		
+		// 轮播内容相关路由
+		slide := api.Group("/slide")
+		{
+			// 获取轮播内容列表
+			slide.GET("/items", slideHandler.GetSlideItems)
+			
+			// 注意：搜索和类型路由要放在/:itemId前面，否则会被误认为是itemId参数
+			
+			// 按内容类型获取轮播内容
+			slide.GET("/items/type/:contentType", slideHandler.GetSlideItemsByType)
+			
+			// 按标签搜索轮播内容
+			slide.GET("/items/search", slideHandler.SearchSlideItems)
+			
+			// 获取轮播内容详情
+			slide.GET("/items/:itemId", slideHandler.GetSlideItemDetail)
 		}
 	}
 }
