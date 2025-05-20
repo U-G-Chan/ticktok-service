@@ -2,7 +2,6 @@ package model
 
 import (
 	"fmt"
-	"log"
 	"ticktok-service/config"
 
 	"gorm.io/driver/mysql"
@@ -10,6 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// DB 全局数据库连接
 var DB *gorm.DB
 
 // SetupDB 初始化数据库连接
@@ -33,12 +33,27 @@ func SetupDB() error {
 		return fmt.Errorf("连接数据库失败: %w", err)
 	}
 
-	log.Println("数据库连接成功")
-
-	// 自动迁移模型
-	err = DB.AutoMigrate(&Blog{}, &BlogImage{}, &BlogTag{}, &Comment{})
+	// 自动迁移数据库表
+	err = DB.AutoMigrate(
+		&Product{},
+		&ProductImage{},
+		&ProductLabel{},
+		&ProductSpec{},
+		&SpecOption{},
+		&ProductService{},
+		&Shop{},
+		&Blog{},
+		&BlogImage{},
+		&BlogTag{},
+		&Comment{},
+		&User{},
+		&Friendship{},
+		&Message{},
+		&Session{},
+		&UnreadMessage{},
+	)
 	if err != nil {
-		return fmt.Errorf("自动迁移数据表失败: %w", err)
+		return fmt.Errorf("自动迁移数据库表失败: %w", err)
 	}
 
 	return nil

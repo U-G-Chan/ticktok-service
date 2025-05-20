@@ -12,6 +12,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	messageHandler := NewMessageHandler(db)
 	userHandler := NewUserHandler(db)
 	blogHandler := NewBlogHandler()
+	productHandler := NewProductHandler(db)
 
 	// API路由组
 	api := r.Group("/api")
@@ -35,6 +36,17 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 		api.GET("/blogs/search", blogHandler.SearchBlogs)
 		// 博客详情
 		api.GET("/blogs/:id", blogHandler.GetBlogDetail)
+		
+		// 商城相关路由
+		mall := api.Group("/mall")
+		{
+			// 商品列表
+			mall.GET("/products", productHandler.GetProducts)
+			// 商品详情
+			mall.GET("/products/:id", productHandler.GetProductDetail)
+			// 标签
+			mall.GET("/labels", productHandler.GetLabels)
+		}
 	}
 }
 
