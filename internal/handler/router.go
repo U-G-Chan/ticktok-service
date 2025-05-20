@@ -2,27 +2,48 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
-// SetupRouter 配置路由
-func SetupRouter() *gin.Engine {
-	r := gin.Default()
-
-	// 创建博客处理器
+// RegisterRoutes 注册路由
+func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
+	// 创建各种处理器
+	friendHandler := NewFriendHandler(db)
+	messageHandler := NewMessageHandler(db)
+	userHandler := NewUserHandler(db)
 	blogHandler := NewBlogHandler()
 
-	// 博客相关API
-	apiGroup := r.Group("/api")
+	// API路由组
+	api := r.Group("/api")
 	{
-		// 博客列表
-		apiGroup.GET("/blogs", blogHandler.GetBlogs)
-		
-		// 搜索博客 - 注意：这个路由必须放在/:id前面，否则会被误认为是id参数
-		apiGroup.GET("/blogs/search", blogHandler.SearchBlogs)
-		
-		// 博客详情
-		apiGroup.GET("/blogs/:id", blogHandler.GetBlogDetail)
-	}
+		// 好友相关路由
+		api.GET("/friends", friendHandler.GetFriends)
 
+		// 消息相关路由
+		api.GET("/messages", messageHandler.GetMessages)
+		api.GET("/chat/:userId", messageHandler.GetChatHistory)
+		api.POST("/chat/send", messageHandler.SendMessage)
+		api.PUT("/chat/read/:userId", messageHandler.MarkAsRead)
+
+		// 用户相关路由
+		api.GET("/user/:userId", userHandler.GetUser)
+		api.POST("/users/batch", userHandler.GetUsersBatch)
+		
+		// 博客相关路由
+		api.GET("/blogs", blogHandler.GetBlogs)
+		// 搜索博客 - 注意：这个路由必须放在/:id前面，否则会被误认为是id参数
+		api.GET("/blogs/search", blogHandler.SearchBlogs)
+		// 博客详情
+		api.GET("/blogs/:id", blogHandler.GetBlogDetail)
+	}
+}
+
+// SetupRouter 配置路由
+func SetupRouter(db *gorm.DB) *gin.Engine {
+	r := gin.Default()
+	
+	// 注册所有路由
+	RegisterRoutes(r, db)
+	
 	return r
 } 
