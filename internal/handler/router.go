@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"ticktok-service/internal/middleware"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -14,6 +16,8 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	blogHandler := NewBlogHandler()
 	productHandler := NewProductHandler(db)
 	slideHandler := NewSlideHandler(db)
+	uploadHandler := NewUploadHandler(db)
+	publishHandler := NewPublishHandler(db)
 
 	// API路由组
 	api := r.Group("/api")
@@ -66,12 +70,32 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 			// 获取轮播内容详情
 			slide.GET("/items/:itemId", slideHandler.GetSlideItemDetail)
 		}
+		
+		// 发布相关路由
+		publish := api.Group("/publish")
+		{
+			// 保存草稿
+			publish.POST("/drafts", publishHandler.SaveDraft)
+			// 发布内容
+			publish.POST("/contents", publishHandler.PublishContent)
+			// 获取话题列表
+			publish.POST("/topics", publishHandler.GetTopics)
+		}
+		
+		// 文件上传相关路由
+		api.POST("/upload/media", uploadHandler.UploadMedia)
 	}
+	
+	// 配置静态文件服务
+	r.Static("/uploads", "./uploads")
 }
 
 // SetupRouter 配置路由
 func SetupRouter(db *gorm.DB) *gin.Engine {
 	r := gin.Default()
+	
+	// 添加CORS中间件
+	r.Use(middleware.CORS())
 	
 	// 注册所有路由
 	RegisterRoutes(r, db)

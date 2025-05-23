@@ -35,6 +35,7 @@ func SetupDB() error {
 
 	// 自动迁移数据库表
 	err = DB.AutoMigrate(
+		// 商品相关表
 		&Product{},
 		&ProductImage{},
 		&ProductLabel{},
@@ -42,18 +43,25 @@ func SetupDB() error {
 		&SpecOption{},
 		&ProductService{},
 		&Shop{},
+		// 博客相关表
 		&Blog{},
 		&BlogImage{},
 		&BlogTag{},
 		&Comment{},
+		// 聊天相关表
 		&User{},
 		&Friendship{},
 		&Message{},
 		&Session{},
 		&UnreadMessage{},
+		// 轮播内容相关表
 		&SlideItem{},
 		&SlideItemLabel{},
 		&SlideAlbumImage{},
+		// 发布相关表
+		&MediaFile{},
+		&Draft{},
+		&Content{},
 	)
 	if err != nil {
 		return fmt.Errorf("自动迁移数据库表失败: %w", err)

@@ -4,7 +4,6 @@ import (
 	"log"
 	"ticktok-service/config"
 	"ticktok-service/internal/handler"
-	"ticktok-service/internal/middleware"
 	"ticktok-service/internal/model"
 )
 
@@ -22,11 +21,8 @@ func main() {
 
 
 
-	// 设置路由
+	// 设置路由 (CORS中间件已在SetupRouter中配置)
 	r := handler.SetupRouter(model.DB)
-
-	// 添加中间件
-	r.Use(middleware.Cors())
 
 	// 启动服务器
 	port := config.AppConfig.Server.Port
