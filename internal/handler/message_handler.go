@@ -25,7 +25,7 @@ func NewMessageHandler(db *gorm.DB) *MessageHandler {
 // GetMessages 获取消息列表
 func (h *MessageHandler) GetMessages(c *gin.Context) {
 	// 这里简化处理，实际应用中应该从JWT或会话中获取当前用户ID
-	userID := uint(1) // 假设当前用户ID为1
+	userID := uint(0) // 假设当前用户ID为0
 
 	// 获取消息列表
 	messages, err := h.messageService.GetMessageList(userID)
@@ -48,7 +48,7 @@ func (h *MessageHandler) GetChatHistory(c *gin.Context) {
 	}
 
 	// 获取当前用户ID（查询参数）
-	currentUserIDStr := c.DefaultQuery("currentUserId", "1") // 默认为1
+	currentUserIDStr := c.DefaultQuery("currentUserId", "0") // 默认为0
 	currentUserID, err := strconv.ParseUint(currentUserIDStr, 10, 32)
 	if err != nil {
 		util.Fail(c, 400, "无效的当前用户ID")
@@ -95,7 +95,7 @@ func (h *MessageHandler) MarkAsRead(c *gin.Context) {
 	}
 
 	// 获取当前用户ID（查询参数）
-	currentUserIDStr := c.DefaultQuery("currentUserId", "1") // 默认为1
+	currentUserIDStr := c.DefaultQuery("currentUserId", "0") // 默认为0
 	currentUserID, err := strconv.ParseUint(currentUserIDStr, 10, 32)
 	if err != nil {
 		util.Fail(c, 400, "无效的当前用户ID")

@@ -13,6 +13,7 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 	friendHandler := NewFriendHandler(db)
 	messageHandler := NewMessageHandler(db)
 	userHandler := NewUserHandler(db)
+	userContentHandler := NewUserContentHandler(db)
 	blogHandler := NewBlogHandler()
 	productHandler := NewProductHandler(db)
 	slideHandler := NewSlideHandler(db)
@@ -34,6 +35,25 @@ func RegisterRoutes(r *gin.Engine, db *gorm.DB) {
 		// 用户相关路由
 		api.GET("/user/:userId", userHandler.GetUser)
 		api.POST("/users/batch", userHandler.GetUsersBatch)
+		
+		// 用户内容相关路由
+		userContent := api.Group("/user/content")
+		{
+			// 获取用户内容列表
+			userContent.GET("/list", userContentHandler.GetContentList)
+			// 创建内容项
+			userContent.POST("/create", userContentHandler.CreateContent)
+			// 更新内容项
+			userContent.PUT("/update", userContentHandler.UpdateContent)
+			// 删除内容项
+			userContent.DELETE("/delete", userContentHandler.DeleteContent)
+			// 切换点赞状态
+			userContent.POST("/toggle-like", userContentHandler.ToggleLike)
+			// 批量创建内容（扩展功能）
+			userContent.POST("/batch-create", userContentHandler.BatchCreateContent)
+			// 获取内容详情（扩展功能）
+			userContent.GET("/detail/:itemId", userContentHandler.GetContentDetail)
+		}
 		
 		// 博客相关路由
 		api.GET("/blogs", blogHandler.GetBlogs)

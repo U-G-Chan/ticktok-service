@@ -23,7 +23,7 @@ func NewFriendHandler(db *gorm.DB) *FriendHandler {
 // GetFriends 获取好友列表
 func (h *FriendHandler) GetFriends(c *gin.Context) {
 	// 这里简化处理，实际应用中应该从JWT或会话中获取当前用户ID
-	userID := uint(1) // 假设当前用户ID为1
+	userID := uint(0) // 假设当前用户ID为0
 
 	// 获取好友列表
 	friends, err := h.friendService.GetFriendsByUserID(userID)

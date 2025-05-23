@@ -26,7 +26,7 @@ func NewPublishHandler(db *gorm.DB) *PublishHandler {
 // SaveDraft 保存草稿
 func (h *PublishHandler) SaveDraft(c *gin.Context) {
 	// 开发模式：使用固定用户ID
-	userID := uint(1)
+	userID := uint(0)
 	
 	// 解析请求参数
 	var req model.PublishMessage
@@ -87,7 +87,7 @@ func (h *PublishHandler) SaveDraft(c *gin.Context) {
 // PublishContent 发布内容
 func (h *PublishHandler) PublishContent(c *gin.Context) {
 	// 开发模式：使用固定用户ID
-	userID := uint(1)
+	userID := uint(0)
 	
 	// 解析请求参数
 	var req model.PublishMessage

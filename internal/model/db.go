@@ -62,6 +62,9 @@ func SetupDB() error {
 		&MediaFile{},
 		&Draft{},
 		&Content{},
+		// 用户内容相关表
+		&UserContent{},
+		&ContentLike{},
 	)
 	if err != nil {
 		return fmt.Errorf("自动迁移数据库表失败: %w", err)
