@@ -1,0 +1,77 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  proto:
+    desc: Generate protobuf code
+    cmds:
+      - protoc --proto_path=api --go_out=paths=source_relative:api --go-grpc_out=paths=source_relative:api api/user/v1/user.proto api/content/v1/content.proto api/message/v1/message.proto api/chatbot/v1/chatbot.proto
+
+  tidy:
+    desc: Run go mod tidy
+    cmds:
+      - go mod tidy
+
+  docker-up:
+    desc: Start Docker environment
+    cmds:
+      - docker-compose --env-file .env -f deploy/docker-compose.yml up -d
+
+  docker-down:
+    desc: Stop Docker environment
+    cmds:
+      - docker-compose --env-file .env -f deploy/docker-compose.yml down
+
+  run-gateway:
+    desc: Run gateway service
+    cmds:
+      - go run cmd/gateway/main.go
+
+  run-user:
+    desc: Run user service
+    cmds:
+      - go run cmd/user/main.go
+
+  run-content:
+    desc: Run content service
+    cmds:
+      - go run cmd/content/main.go
+
+  run-message:
+    desc: Run message service
+    cmds:
+      - go run cmd/message/main.go
+
+  run-chatbot:
+    desc: Run chatbot service
+    cmds:
+      - go run cmd/chatbot/main.go
+
+  dev-gateway:
+    desc: Run gateway service with hot reload (air)
+    cmds:
+      - air -c config/.air/.air-gateway.toml
+
+  dev-user:
+    desc: Run user service with hot reload (air)
+    cmds:
+      - air -c config/.air/.air-user.toml
+
+  dev-content:
+    desc: Run content service with hot reload (air)
+    cmds:
+      - air -c config/.air/.air-content.toml
+
+  dev-message:
+    desc: Run message service with hot reload (air)
+    cmds:
+      - air -c config/.air/.air-message.toml
+
+  dev-chatbot:
+    desc: Run chatbot service with hot reload (air)
+    cmds:
+      - air -c config/.air/.air-chatbot.toml
