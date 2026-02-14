@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package message.v1;
+
+option go_package = "ticktok-service/api/message/v1;message";
+
+service MessageService {
+    rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
+    rpc GetMessageList(GetMessageListRequest) returns (GetMessageListResponse);
+}
+
+message SendMessageRequest {
+    string token = 1;
+    int64 to_user_id = 2;
+    int32 action_type = 3;
+    string content = 4;
+}
+
+message SendMessageResponse {
+    int32 code = 1;
+    string msg = 2;
+}
+
+message GetMessageListRequest {
+    string token = 1;
+    int64 to_user_id = 2;
+    int64 pre_msg_time = 3;
+}
+
+message Message {
+    int64 id = 1;
+    int64 to_user_id = 2;
+    int64 from_user_id = 3;
+    string content = 4;
+    int64 create_time = 5; // milliseconds
+}
+
+message GetMessageListResponse {
+    int32 code = 1;
+    string msg = 2;
+    repeated Message message_list = 3;
+}

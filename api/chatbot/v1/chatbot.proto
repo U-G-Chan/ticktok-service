@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package chatbot.v1;
+
+option go_package = "ticktok-service/api/chatbot/v1;chatbot";
+
+service ChatbotService {
+    rpc Chat(ChatRequest) returns (ChatResponse);
+}
+
+message ChatRequest {
+    string user_input = 1;
+    int64 user_id = 2;
+}
+
+message ChatResponse {
+    string reply = 1;
+}
