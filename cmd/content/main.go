@@ -5,7 +5,7 @@ import (
 	"net"
 	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/logger"
-	
+
 	"google.golang.org/grpc"
 )
 
@@ -15,8 +15,8 @@ func main() {
 	}
 	logger.Init(config.Config.LogLevel)
 
-	port := "10002"
-	lis, err := net.Listen("tcp", ":"+port)
+	port := ":" + config.Config.ContentService.Port
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		logger.Log.Fatal("failed to listen: " + err.Error())
 	}

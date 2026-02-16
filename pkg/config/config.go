@@ -11,6 +11,10 @@ var Config *Configuration
 
 type Configuration struct {
 	Server   ServerConfig   `mapstructure:"server"`
+	UserService    ServiceConfig  `mapstructure:"user_service"`
+	ContentService ServiceConfig  `mapstructure:"content_service"`
+	MessageService ServiceConfig  `mapstructure:"message_service"`
+	ChatbotService ServiceConfig  `mapstructure:"chatbot_service"`
 	MySQL    MySQLConfig    `mapstructure:"mysql"`
 	Redis    RedisConfig    `mapstructure:"redis"`
 	MinIO    MinIOConfig    `mapstructure:"minio"`
@@ -27,10 +31,13 @@ type MicroservicesConfig struct {
 	Chatbot string `mapstructure:"chatbot"`
 }
 
+type ServiceConfig struct {
+	Port string `mapstructure:"port"`
+}
+
 type ServerConfig struct {
 	RunMode      string `mapstructure:"run_mode"`
 	HttpPort     string `mapstructure:"http_port"`
-	GrpcPort     string `mapstructure:"grpc_port"`
 	ReadTimeout  int    `mapstructure:"read_timeout"`
 	WriteTimeout int    `mapstructure:"write_timeout"`
 }

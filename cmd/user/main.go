@@ -24,7 +24,8 @@ func main() {
 		logger.Log.Fatal("failed to auto migrate: " + err.Error())
 	}
 
-	lis, err := net.Listen("tcp", ":"+config.Config.Server.GrpcPort)
+	port := ":" + config.Config.UserService.Port
+	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		logger.Log.Fatal("failed to listen: " + err.Error())
 	}
@@ -33,7 +34,7 @@ func main() {
 
 	user.RegisterUserServiceServer(s, service.NewUserService())
 
-	logger.Log.Info("User service starting on port " + config.Config.Server.GrpcPort)
+	logger.Log.Info("User service starting on port " + port)
 	if err := s.Serve(lis); err != nil {
 		logger.Log.Fatal("failed to serve: " + err.Error())
 	}

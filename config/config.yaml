@@ -1,7 +1,6 @@
 server:
   run_mode: debug
   http_port: 8080
-  grpc_port: 10001
   read_timeout: 60
   write_timeout: 60
 
@@ -33,6 +32,15 @@ jwt:
   secret: ticktok_secret_key
   access_expire: 900 # 15 minutes
   refresh_expire: 604800 # 7 days
+
+user_service:
+  port: 10001
+content_service:
+  port: 10002
+message_service:
+  port: 10003
+chatbot_service:
+  port: 10004
 
 microservices:
   user: "localhost:10001"
