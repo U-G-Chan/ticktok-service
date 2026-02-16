@@ -13,7 +13,16 @@ func main() {
 	logger.Init(config.Config.LogLevel)
 	redis.Init()
 	// Initialize RPC clients
-	rpc.GetClientManager()
+	serviceAddrs := map[string]string{
+		"user":    config.Config.Microservices.User,
+		"content": config.Config.Microservices.Content,
+		"message": config.Config.Microservices.Message,
+		"chatbot": config.Config.Microservices.Chatbot,
+	}
+	if _, err := rpc.InitClientManager(serviceAddrs); err != nil {
+		logger.Log.Fatal("Failed to init RPC clients: " + err.Error())
+	}
+	
 	r := router.NewRouter()
 
 	logger.Log.Info("Gateway server starting on port " + config.Config.Server.HttpPort)

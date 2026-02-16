@@ -1,12 +1,12 @@
 package rpc
 
 import (
+	"errors"
 	"sync"
 	"ticktok-service/api/chatbot/v1"
 	"ticktok-service/api/content/v1"
 	"ticktok-service/api/message/v1"
 	"ticktok-service/api/user/v1"
-	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/logger"
 
 	"google.golang.org/grpc"
@@ -26,60 +26,54 @@ type ClientManager struct {
 	ChatbotClient chatbot.ChatbotServiceClient
 }
 
-func GetClientManager() *ClientManager {
+// InitClientManager initializes the singleton instance of ClientManager with specific services
+func InitClientManager(serviceAddrs map[string]string) (*ClientManager, error) {
+	var err error
 	once.Do(func() {
 		clientManager = &ClientManager{}
-		clientManager.initClients()
+		err = clientManager.initClients(serviceAddrs)
 	})
+	return clientManager, err
+}
+
+// GetClientManager returns the singleton instance of ClientManager
+func GetClientManager() *ClientManager {
+	if clientManager == nil {
+		panic("ClientManager not initialized. Call InitClientManager first.")
+	}
 	return clientManager
 }
 
-func NewClientManager() *ClientManager {
-	cm := &ClientManager{}
-	cm.initClients()
-	return cm
-}
+func (cm *ClientManager) initClients(serviceAddrs map[string]string) error {
+	for name, addr := range serviceAddrs {
+		if addr == "" {
+			continue
+		}
 
-func (cm *ClientManager) initClients() {
-	if config.Config.Microservices.User != "" {
-		conn, err := connect(config.Config.Microservices.User)
+		conn, err := connect(addr)
 		if err != nil {
-			logger.Log.Error("failed to connect to user service: " + err.Error())
-		} else {
+			logger.Log.Error("failed to connect to " + name + " service: " + err.Error())
+			return err
+		}
+
+		switch name {
+		case "user":
 			cm.UserClient = user.NewUserServiceClient(conn)
 			logger.Log.Info("User RPC client initialized")
-		}
-	}
-
-	if config.Config.Microservices.Content != "" {
-		conn, err := connect(config.Config.Microservices.Content)
-		if err != nil {
-			logger.Log.Error("failed to connect to content service: " + err.Error())
-		} else {
+		case "content":
 			cm.ContentClient = content.NewContentServiceClient(conn)
 			logger.Log.Info("Content RPC client initialized")
-		}
-	}
-
-	if config.Config.Microservices.Message != "" {
-		conn, err := connect(config.Config.Microservices.Message)
-		if err != nil {
-			logger.Log.Error("failed to connect to message service: " + err.Error())
-		} else {
+		case "message":
 			cm.MessageClient = message.NewMessageServiceClient(conn)
 			logger.Log.Info("Message RPC client initialized")
-		}
-	}
-
-	if config.Config.Microservices.Chatbot != "" {
-		conn, err := connect(config.Config.Microservices.Chatbot)
-		if err != nil {
-			logger.Log.Error("failed to connect to chatbot service: " + err.Error())
-		} else {
+		case "chatbot":
 			cm.ChatbotClient = chatbot.NewChatbotServiceClient(conn)
 			logger.Log.Info("Chatbot RPC client initialized")
+		default:
+			return errors.New("unknown service name: " + name)
 		}
 	}
+	return nil
 }
 
 func connect(target string) (*grpc.ClientConn, error) {
