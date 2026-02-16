@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 tasks:
   default:
@@ -50,28 +50,3 @@ tasks:
     desc: Run chatbot service
     cmds:
       - go run cmd/chatbot/main.go
-
-  dev-gateway:
-    desc: Run gateway service with hot reload (air)
-    cmds:
-      - air -c config/.air/.air-gateway.toml
-
-  dev-user:
-    desc: Run user service with hot reload (air)
-    cmds:
-      - air -c config/.air/.air-user.toml
-
-  dev-content:
-    desc: Run content service with hot reload (air)
-    cmds:
-      - air -c config/.air/.air-content.toml
-
-  dev-message:
-    desc: Run message service with hot reload (air)
-    cmds:
-      - air -c config/.air/.air-message.toml
-
-  dev-chatbot:
-    desc: Run chatbot service with hot reload (air)
-    cmds:
-      - air -c config/.air/.air-chatbot.toml
