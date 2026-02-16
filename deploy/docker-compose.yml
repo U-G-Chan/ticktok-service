@@ -16,7 +16,7 @@ services:
     image: docker.1ms.run/redis:alpine
     container_name: ticktok-redis
     ports:
-      - "6379:6379"
+      - "16379:6379"
 
   minio:
     image: docker.1ms.run/minio/minio
@@ -26,8 +26,8 @@ services:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: ugchan123456
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "19000:9000"
+      - "19001:9001"
     volumes:
       - ../data/minio:/data
 
@@ -46,7 +46,7 @@ services:
     volumes:
       - ../config/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "9091:9090"
+      - "19091:9090"
 
   grafana:
     image: docker.1ms.run/grafana/grafana

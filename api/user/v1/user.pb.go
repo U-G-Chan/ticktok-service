@@ -78,7 +78,8 @@ type LoginResponse struct {
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
 	UserId        int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Token         string                 `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
+	AccessToken   string                 `protobuf:"bytes,4,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,5,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -134,9 +135,16 @@ func (x *LoginResponse) GetUserId() int64 {
 	return 0
 }
 
-func (x *LoginResponse) GetToken() string {
+func (x *LoginResponse) GetAccessToken() string {
 	if x != nil {
-		return x.Token
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *LoginResponse) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
 	}
 	return ""
 }
@@ -198,7 +206,8 @@ type RegisterResponse struct {
 	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
 	UserId        int64                  `protobuf:"varint,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Token         string                 `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
+	AccessToken   string                 `protobuf:"bytes,4,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,5,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -254,9 +263,16 @@ func (x *RegisterResponse) GetUserId() int64 {
 	return 0
 }
 
-func (x *RegisterResponse) GetToken() string {
+func (x *RegisterResponse) GetAccessToken() string {
 	if x != nil {
-		return x.Token
+		return x.AccessToken
+	}
+	return ""
+}
+
+func (x *RegisterResponse) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
 	}
 	return ""
 }
@@ -504,20 +520,22 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x12user/v1/user.proto\x12\auser.v1\"F\n" +
 	"\fLoginRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"d\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x96\x01\n" +
 	"\rLoginResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x14\n" +
-	"\x05token\x18\x04 \x01(\tR\x05token\"I\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12!\n" +
+	"\faccess_token\x18\x04 \x01(\tR\vaccessToken\x12#\n" +
+	"\rrefresh_token\x18\x05 \x01(\tR\frefreshToken\"I\n" +
 	"\x0fRegisterRequest\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"g\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"\x99\x01\n" +
 	"\x10RegisterResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x12\x17\n" +
-	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12\x14\n" +
-	"\x05token\x18\x04 \x01(\tR\x05token\"Q\n" +
+	"\auser_id\x18\x03 \x01(\x03R\x06userId\x12!\n" +
+	"\faccess_token\x18\x04 \x01(\tR\vaccessToken\x12#\n" +
+	"\rrefresh_token\x18\x05 \x01(\tR\frefreshToken\"Q\n" +
 	"\x12GetUserInfoRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\"\n" +
 	"\rtoken_user_id\x18\x02 \x01(\x03R\vtokenUserId\"\xe1\x02\n" +

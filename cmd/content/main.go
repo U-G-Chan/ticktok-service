@@ -15,8 +15,7 @@ func main() {
 	}
 	logger.Init(config.Config.LogLevel)
 
-	// Note: You might want to use a different port for Content Service
-	port := "9091" 
+	port := "10002"
 	lis, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		logger.Log.Fatal("failed to listen: " + err.Error())

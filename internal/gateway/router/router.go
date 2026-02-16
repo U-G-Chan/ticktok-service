@@ -1,0 +1,36 @@
+package router
+
+import (
+	"ticktok-service/internal/gateway/handler"
+	"ticktok-service/internal/gateway/middleware"
+
+	"github.com/gin-gonic/gin"
+)
+
+func NewRouter() *gin.Engine {
+	r := gin.Default()
+
+	// Public routes
+	auth := r.Group("/api/v1/auth")
+	{
+		auth.POST("/register", handler.Register)
+		auth.POST("/login", handler.Login)
+		auth.POST("/logout", handler.Logout)
+		auth.POST("/refresh", handler.Refresh)
+	}
+
+	// Protected routes
+	api := r.Group("/api/v1")
+	api.Use(middleware.JWTMiddleware())
+	{
+		api.GET("/ping", func(c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "pong",
+				"user_id": c.MustGet("userID"),
+			})
+		})
+		// TODO: Add other protected routes
+	}
+
+	return r
+}

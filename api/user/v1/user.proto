@@ -19,7 +19,8 @@ message LoginResponse {
     int32 code = 1;
     string msg = 2;
     int64 user_id = 3;
-    string token = 4;
+    string access_token = 4;
+    string refresh_token = 5;
 }
 
 message RegisterRequest {
@@ -31,7 +32,8 @@ message RegisterResponse {
     int32 code = 1;
     string msg = 2;
     int64 user_id = 3;
-    string token = 4;
+    string access_token = 4;
+    string refresh_token = 5;
 }
 
 message GetUserInfoRequest {

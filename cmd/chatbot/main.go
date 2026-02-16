@@ -15,7 +15,7 @@ func main() {
 	}
 	logger.Init(config.Config.LogLevel)
 
-	port := "9093"
+	port := "10004"
 	lis, err := net.Listen("tcp", ":"+port)
 	if err != nil {
 		logger.Log.Fatal("failed to listen: " + err.Error())

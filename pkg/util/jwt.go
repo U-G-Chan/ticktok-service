@@ -12,19 +12,40 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func GenerateToken(userID int64) (string, error) {
-	claims := Claims{
+// GenerateToken generates access and refresh tokens
+func GenerateToken(userID int64) (string, string, error) {
+	// Access Token
+	accessClaims := Claims{
 		UserID: userID,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.Config.JWT.AccessExpire) * time.Second)),
 			Issuer:    "ticktok",
 		},
 	}
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessClaims)
+	accessString, err := accessToken.SignedString([]byte(config.Config.JWT.Secret))
+	if err != nil {
+		return "", "", err
+	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.Config.JWT.Secret))
+	// Refresh Token
+	refreshClaims := Claims{
+		UserID: userID,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(config.Config.JWT.RefreshExpire) * time.Second)),
+			Issuer:    "ticktok",
+		},
+	}
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims)
+	refreshString, err := refreshToken.SignedString([]byte(config.Config.JWT.Secret))
+	if err != nil {
+		return "", "", err
+	}
+
+	return accessString, refreshString, nil
 }
 
+// ParseToken parses the token
 func ParseToken(tokenString string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(config.Config.JWT.Secret), nil

@@ -16,7 +16,15 @@ type Configuration struct {
 	MinIO    MinIOConfig    `mapstructure:"minio"`
 	Etcd     EtcdConfig     `mapstructure:"etcd"`
 	JWT      JWTConfig      `mapstructure:"jwt"`
+	Microservices MicroservicesConfig `mapstructure:"microservices"`
 	LogLevel string         `mapstructure:"log_level"`
+}
+
+type MicroservicesConfig struct {
+	User    string `mapstructure:"user"`
+	Content string `mapstructure:"content"`
+	Message string `mapstructure:"message"`
+	Chatbot string `mapstructure:"chatbot"`
 }
 
 type ServerConfig struct {
@@ -55,7 +63,9 @@ type EtcdConfig struct {
 }
 
 type JWTConfig struct {
-	Secret string `mapstructure:"secret"`
+	Secret        string `mapstructure:"secret"`
+	AccessExpire  int64  `mapstructure:"access_expire"`
+	RefreshExpire int64  `mapstructure:"refresh_expire"`
 }
 
 func Init(configPath string) error {
