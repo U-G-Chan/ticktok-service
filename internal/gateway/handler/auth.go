@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 	"ticktok-service/api/user/v1"
-	"ticktok-service/internal/gateway/rpc"
 	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/redis"
+	"ticktok-service/pkg/rpc"
 	"ticktok-service/pkg/util"
 	"time"
 
@@ -24,7 +24,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	resp, err := rpc.UserClient.Register(c.Request.Context(), &req)
+	resp, err := rpc.GetClientManager().UserClient.Register(c.Request.Context(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
 		return
@@ -52,7 +52,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	resp, err := rpc.UserClient.Login(c.Request.Context(), &req)
+	resp, err := rpc.GetClientManager().UserClient.Login(c.Request.Context(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
 		return
