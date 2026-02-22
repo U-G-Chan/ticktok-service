@@ -127,6 +127,38 @@ POST /api/users/batch
 - sessions: 消息会话表
 - unread_messages: 未读消息表
 
+## Docker 环境运行
+
+本项目使用 Docker Compose 部署 MySQL, Redis, MinIO, Etcd, Prometheus 和 Grafana 等基础服务。
+
+### 常用命令
+
+1. **启动服务**
+
+```bash
+docker-compose -f deploy/docker-compose.yml up -d
+```
+
+2. **停止服务**
+
+```bash
+docker-compose -f deploy/docker-compose.yml down
+```
+
+3. **查看日志**
+
+```bash
+docker-compose -f deploy/docker-compose.yml logs -f
+```
+
+4. **查看服务状态**
+
+```bash
+docker-compose -f deploy/docker-compose.yml ps
+```
+
+> 注意：`.env` 文件已移动到项目根目录，无需额外指定 `--env-file` 参数。
+
 ## 许可证
 
 MIT 
