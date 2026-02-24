@@ -1,9 +1,51 @@
 server:
-  port: 8080
+  run_mode: debug
+  http_port: 8080
+  read_timeout: 60
+  write_timeout: 60
 
-database:
-  host: 127.0.0.1
+mysql:
+  host: localhost
   port: 3306
   user: root
-  password: 123456
-  dbname: ticktok_db
+  password: ugchan123456
+  dbname: ticktok
+
+redis:
+  host: localhost
+  port: 16379
+  password: ""
+  db: 0
+
+minio:
+  endpoint: localhost:19000
+  access_key_id: minioadmin
+  secret_access_key: ugchan123456
+  use_ssl: false
+  bucket_name: ticktok
+
+etcd:
+  endpoints:
+    - localhost:2379
+
+jwt:
+  secret: ticktok_secret_key
+  access_expire: 900 # 15 minutes
+  refresh_expire: 604800 # 7 days
+
+user_service:
+  port: 10001
+content_service:
+  port: 10002
+message_service:
+  port: 10003
+chatbot_service:
+  port: 10004
+
+microservices:
+  user: "localhost:10001"
+  content: "localhost:10002"
+  message: "localhost:10003"
+  chatbot: "localhost:10004"
+
+log_level: debug

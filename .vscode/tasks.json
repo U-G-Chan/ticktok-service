@@ -1,0 +1,189 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start All Services",
+      "dependsOn": [
+        "Start Gateway Service",
+        "Start User Service",
+        "Start Content Service",
+        "Start Message Service",
+        "Start Chatbot Service"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Gateway Service",
+      "type": "shell",
+      "command": "air",
+      "args": ["-c", "config/.air/.air-gateway.toml"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "icon": {
+        "id": "globe",
+        "color": "terminal.ansiBlue"
+      },
+      "problemMatcher": {
+        "owner": "go",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "building...",
+          "endsPattern": "running..."
+        }
+      }
+    },
+    {
+      "label": "Start User Service",
+      "type": "shell",
+      "command": "air",
+      "args": ["-c", "config/.air/.air-user.toml"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "icon": {
+        "id": "person",
+        "color": "terminal.ansiGreen"
+      },
+      "problemMatcher": {
+        "owner": "go",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "building...",
+          "endsPattern": "running..."
+        }
+      }
+    },
+    {
+      "label": "Start Content Service",
+      "type": "shell",
+      "command": "air",
+      "args": ["-c", "config/.air/.air-content.toml"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "icon": {
+        "id": "file-media",
+        "color": "terminal.ansiYellow"
+      },
+      "problemMatcher": {
+        "owner": "go",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "building...",
+          "endsPattern": "running..."
+        }
+      }
+    },
+    {
+      "label": "Start Message Service",
+      "type": "shell",
+      "command": "air",
+      "args": ["-c", "config/.air/.air-message.toml"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "icon": {
+        "id": "comment-discussion",
+        "color": "terminal.ansiMagenta"
+      },
+      "problemMatcher": {
+        "owner": "go",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "building...",
+          "endsPattern": "running..."
+        }
+      }
+    },
+    {
+      "label": "Start Chatbot Service",
+      "type": "shell",
+      "command": "air",
+      "args": ["-c", "config/.air/.air-chatbot.toml"],
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "icon": {
+        "id": "robot",
+        "color": "terminal.ansiCyan"
+      },
+      "problemMatcher": {
+        "owner": "go",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "building...",
+          "endsPattern": "running..."
+        }
+      }
+    },
+    {
+      "label": "Docker Up",
+      "type": "shell",
+      "command": "task",
+      "args": ["docker-up"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "icon": {
+        "id": "server",
+        "color": "terminal.ansiRed"
+      }
+    }
+  ]
+}
