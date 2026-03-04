@@ -5,14 +5,58 @@ package chatbot.v1;
 option go_package = "ticktok-service/api/chatbot/v1;chatbot";
 
 service ChatbotService {
-    rpc Chat(ChatRequest) returns (ChatResponse);
+    rpc ChatStream(ChatStreamRequest) returns (stream ChatStreamResponse);
+    rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse);
+    rpc ListConversations(ListConversationsRequest) returns (ListConversationsResponse);
+    rpc CreateConversation(CreateConversationRequest) returns (CreateConversationResponse);
 }
 
-message ChatRequest {
-    string user_input = 1;
-    int64 user_id = 2;
+message CreateConversationRequest {
+    int64 user_id = 1;
+    string title = 2;
 }
 
-message ChatResponse {
-    string reply = 1;
+message CreateConversationResponse {
+    string session_id = 1;
+}
+
+message ChatMessage {
+    string role = 1;
+    string content = 2;
+}
+
+message ChatStreamRequest {
+    string model = 1;               
+    repeated ChatMessage messages = 2;
+    string session_id = 4;
+    int64 user_id = 5; 
+    double temperature = 6; 
+}
+
+message ChatStreamResponse {
+    string content_chunk = 1;       
+    bool is_finish = 2;             
+    string finish_reason = 3; 
+}
+
+message GetChatHistoryRequest {
+    string session_id = 1;
+}
+
+message GetChatHistoryResponse {
+    repeated ChatMessage messages = 1;
+}
+
+message ListConversationsRequest {
+    int64 user_id = 1;
+}
+
+message ConversationInfo {
+    string session_id = 1;
+    string title = 2;
+    int64 created_at = 3; // Timestamp
+}
+
+message ListConversationsResponse {
+    repeated ConversationInfo conversations = 1;
 }
