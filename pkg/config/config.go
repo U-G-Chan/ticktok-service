@@ -22,6 +22,13 @@ type Configuration struct {
 	JWT      JWTConfig      `mapstructure:"jwt"`
 	Microservices MicroservicesConfig `mapstructure:"microservices"`
 	LogLevel string         `mapstructure:"log_level"`
+	LLM      LLMConfig      `mapstructure:"llm"`
+}
+
+type LLMConfig struct {
+	BaseURL string `mapstructure:"base_url"`
+	APIKey  string `mapstructure:"api_key"`
+	Model   string `mapstructure:"model"`
 }
 
 type MicroservicesConfig struct {
