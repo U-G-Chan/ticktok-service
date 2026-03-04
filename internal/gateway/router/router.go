@@ -29,7 +29,19 @@ func NewRouter() *gin.Engine {
 				"user_id": c.MustGet("userID"),
 			})
 		})
-		// TODO: Add other protected routes
+
+		// Chatbot routes
+		chat := api.Group("/chat")
+		{
+			chat.POST("/completions", handler.ChatCompletions)
+		}
+		
+		chatbot := api.Group("/chatbot")
+		{
+			chatbot.POST("/newConversation", handler.CreateConversation)
+			chatbot.GET("/history/list", handler.ListConversations)
+			chatbot.GET("/history/:session_id", handler.GetChatHistory)
+		}
 	}
 
 	return r
