@@ -4,6 +4,7 @@ import (
 	"log"
 	"net"
 	pb "ticktok-service/api/chatbot/v1"
+	"ticktok-service/internal/chatbot/model"
 	"ticktok-service/internal/chatbot/service"
 	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/logger"
@@ -20,6 +21,10 @@ func main() {
 	logger.Init(config.Config.LogLevel)
 	mysql.Init()
 	redis.Init()
+
+	if err := model.AutoMigrate(mysql.DB); err != nil {
+		logger.Log.Fatal("failed to auto migrate: " + err.Error())
+	}
 
 	port := ":" + config.Config.ChatbotService.Port
 	lis, err := net.Listen("tcp", port)
