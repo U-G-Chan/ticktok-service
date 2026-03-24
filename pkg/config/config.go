@@ -10,19 +10,20 @@ import (
 var Config *Configuration
 
 type Configuration struct {
-	Server   ServerConfig   `mapstructure:"server"`
-	UserService    ServiceConfig  `mapstructure:"user_service"`
-	ContentService ServiceConfig  `mapstructure:"content_service"`
-	MessageService ServiceConfig  `mapstructure:"message_service"`
-	ChatbotService ServiceConfig  `mapstructure:"chatbot_service"`
-	MySQL    MySQLConfig    `mapstructure:"mysql"`
-	Redis    RedisConfig    `mapstructure:"redis"`
-	MinIO    MinIOConfig    `mapstructure:"minio"`
-	Etcd     EtcdConfig     `mapstructure:"etcd"`
-	JWT      JWTConfig      `mapstructure:"jwt"`
-	Microservices MicroservicesConfig `mapstructure:"microservices"`
-	LogLevel string         `mapstructure:"log_level"`
-	LLM      LLMConfig      `mapstructure:"llm"`
+	Server         ServerConfig        `mapstructure:"server"`
+	UserService    ServiceConfig       `mapstructure:"user_service"`
+	ContentService ServiceConfig       `mapstructure:"content_service"`
+	MessageService ServiceConfig       `mapstructure:"message_service"`
+	ChatbotService ServiceConfig       `mapstructure:"chatbot_service"`
+	MySQL          MySQLConfig         `mapstructure:"mysql"`
+	Redis          RedisConfig         `mapstructure:"redis"`
+	MinIO          MinIOConfig         `mapstructure:"minio"`
+	Etcd           EtcdConfig          `mapstructure:"etcd"`
+	JWT            JWTConfig           `mapstructure:"jwt"`
+	Microservices  MicroservicesConfig `mapstructure:"microservices"`
+	Kafka          KafkaConfig         `mapstructure:"kafka"`
+	LogLevel       string              `mapstructure:"log_level"`
+	LLM            LLMConfig           `mapstructure:"llm"`
 }
 
 type LLMConfig struct {
@@ -76,6 +77,13 @@ type EtcdConfig struct {
 	Endpoints []string `mapstructure:"endpoints"`
 }
 
+type KafkaConfig struct {
+	Brokers      []string `mapstructure:"brokers"`
+	ChatTopic    string   `mapstructure:"chat_topic"`
+	PushGroupID  string   `mapstructure:"push_group_id"`
+	StoreGroupID string   `mapstructure:"store_group_id"`
+}
+
 type JWTConfig struct {
 	Secret        string `mapstructure:"secret"`
 	AccessExpire  int64  `mapstructure:"access_expire"`
@@ -85,7 +93,7 @@ type JWTConfig struct {
 func Init(configPath string) error {
 	viper.SetConfigFile(configPath)
 	viper.SetConfigType("yaml")
-	
+
 	// Environment variables
 	viper.AutomaticEnv()
 	viper.SetEnvPrefix("TICKTOK")
