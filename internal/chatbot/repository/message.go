@@ -26,4 +26,3 @@ func (r *MessageRepo) GetBySessionID(sessionID string) ([]*model.ChatMessage, er
 func (r *MessageRepo) Create(message *model.ChatMessage) error {
 	return r.DB.Create(message).Error
 }
-

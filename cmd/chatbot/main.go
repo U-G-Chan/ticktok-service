@@ -31,9 +31,9 @@ func main() {
 	if err != nil {
 		logger.Log.Fatal("failed to listen: " + err.Error())
 	}
-	
+
 	s := grpc.NewServer()
-	
+
 	// Register Chatbot Service
 	pb.RegisterChatbotServiceServer(s, service.NewChatbotService())
 

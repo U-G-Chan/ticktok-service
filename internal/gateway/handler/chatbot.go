@@ -12,10 +12,10 @@ import (
 )
 
 type ChatCompletionRequest struct {
-	Model       string           `json:"model"`
+	Model       string            `json:"model"`
 	Messages    []*pb.ChatMessage `json:"messages"`
-	Temperature float64          `json:"temperature"`
-	Stream      bool             `json:"stream"`
+	Temperature float64           `json:"temperature"`
+	Stream      bool              `json:"stream"`
 }
 
 // ChatCompletions handles POST /v1/chat/completions
@@ -39,7 +39,7 @@ func ChatCompletions(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "X-Session-ID header is required"})
 		return
 	}
-	
+
 	streamReq := &pb.ChatStreamRequest{
 		Model:       req.Model,
 		Messages:    req.Messages,
@@ -81,7 +81,7 @@ func ChatCompletions(c *gin.Context) {
 		// Format as OpenAI chunk
 		// data: {"id":"...","object":"chat.completion.chunk","created":...,"model":"...",
 		// "choices":[{"index":0,"delta":{"content":"..."},"finish_reason":null}]}
-		
+
 		chunk := gin.H{
 			"id":      "chatcmpl-" + sessionID,
 			"object":  "chat.completion.chunk",

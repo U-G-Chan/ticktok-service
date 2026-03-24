@@ -73,7 +73,7 @@ func (s *ChatbotService) registerHooks() {
 				role = "system" // Or mark as intercepted
 			}
 			if err := s.messageService.SaveMessage(ctx, session.SessionID, role,
-				 session.FullResponse.String()); err != nil {
+				session.FullResponse.String()); err != nil {
 				logger.Log.Error("failed to save assistant message: " + err.Error())
 			}
 		}
@@ -102,9 +102,9 @@ func (s *ChatbotService) StreamChat(req *pb.ChatStreamRequest, stream pb.Chatbot
 	if len(req.Messages) > 0 {
 		prompt = req.Messages[len(req.Messages)-1].Content
 	}
-	
+
 	// Convert pb messages to openai messages for history
-	// @TODO O(n) --->> O(1)? 
+	// @TODO O(n) --->> O(1)?
 	var openaiMsgs []openai.ChatCompletionMessage
 	for _, msg := range req.Messages {
 		openaiMsgs = append(openaiMsgs, openai.ChatCompletionMessage{

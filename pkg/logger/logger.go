@@ -12,7 +12,7 @@ var Log *zap.Logger
 func Init(level string) {
 	writeSyncer := zapcore.AddSync(os.Stdout)
 	encoder := getEncoder()
-	
+
 	var l zapcore.Level
 	switch level {
 	case "debug":

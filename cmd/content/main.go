@@ -20,9 +20,9 @@ func main() {
 	if err != nil {
 		logger.Log.Fatal("failed to listen: " + err.Error())
 	}
-	
+
 	s := grpc.NewServer()
-	
+
 	// TODO: Register Content Service
 
 	logger.Log.Info("Content service starting on port " + port)

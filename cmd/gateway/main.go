@@ -22,7 +22,7 @@ func main() {
 	if _, err := rpc.InitClientManager(serviceAddrs); err != nil {
 		logger.Log.Fatal("Failed to init RPC clients: " + err.Error())
 	}
-	
+
 	r := router.NewRouter()
 
 	logger.Log.Info("Gateway server starting on port " + config.Config.Server.HttpPort)

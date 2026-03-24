@@ -2,7 +2,6 @@ package model
 
 import "gorm.io/gorm"
 
-
 type Conversation struct {
 	gorm.Model
 	SessionID string `gorm:"column:session_id;type:varchar(64);uniqueIndex;not null"`
@@ -13,5 +12,3 @@ type Conversation struct {
 func (Conversation) TableName() string {
 	return "conversations"
 }
-
-

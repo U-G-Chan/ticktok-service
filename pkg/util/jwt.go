@@ -1,8 +1,8 @@
 package util
 
 import (
-	"time"
 	"ticktok-service/pkg/config"
+	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )

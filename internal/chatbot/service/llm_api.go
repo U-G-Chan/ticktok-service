@@ -70,7 +70,7 @@ func (s *LLMAPIService) buildMessages(session *ChatSession) []openai.ChatComplet
 	if len(session.Messages) > 0 {
 		return session.Messages
 	}
-	
+
 	// Fallback to just the prompt if no history is present (though session.Messages should ideally be populated)
 	return []openai.ChatCompletionMessage{
 		{
