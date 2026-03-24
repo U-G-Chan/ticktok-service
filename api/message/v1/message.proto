@@ -7,6 +7,10 @@ option go_package = "ticktok-service/api/message/v1;message";
 service MessageService {
     rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
     rpc GetMessageList(GetMessageListRequest) returns (GetMessageListResponse);
+    // PushMsgToClient is called by Push Worker to push a message to the target client on a specific node.
+    rpc PushMsgToClient(PushMsgRequest) returns (PushMsgResponse);
+    // SyncMessageList is called by Gateway to sync offline messages using a sync_key (msg_id).
+    rpc SyncMessageList(SyncMessageListRequest) returns (SyncMessageListResponse);
 }
 
 message SendMessageRequest {
@@ -39,4 +43,25 @@ message GetMessageListResponse {
     int32 code = 1;
     string msg = 2;
     repeated Message message_list = 3;
+}
+
+message PushMsgRequest {
+    Message message = 1;
+}
+
+message PushMsgResponse {
+    int32 code = 1;
+    string msg = 2;
+}
+
+message SyncMessageListRequest {
+    int64 user_id = 1;
+    int64 sync_key = 2; // last msg_id received by the client
+}
+
+message SyncMessageListResponse {
+    int32 code = 1;
+    string msg = 2;
+    repeated Message message_list = 3;
+    int64 next_sync_key = 4;
 }

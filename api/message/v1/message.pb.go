@@ -337,6 +337,222 @@ func (x *GetMessageListResponse) GetMessageList() []*Message {
 	return nil
 }
 
+type PushMsgRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       *Message               `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PushMsgRequest) Reset() {
+	*x = PushMsgRequest{}
+	mi := &file_message_v1_message_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PushMsgRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PushMsgRequest) ProtoMessage() {}
+
+func (x *PushMsgRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_message_v1_message_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PushMsgRequest.ProtoReflect.Descriptor instead.
+func (*PushMsgRequest) Descriptor() ([]byte, []int) {
+	return file_message_v1_message_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *PushMsgRequest) GetMessage() *Message {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+type PushMsgResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PushMsgResponse) Reset() {
+	*x = PushMsgResponse{}
+	mi := &file_message_v1_message_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PushMsgResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PushMsgResponse) ProtoMessage() {}
+
+func (x *PushMsgResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_message_v1_message_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PushMsgResponse.ProtoReflect.Descriptor instead.
+func (*PushMsgResponse) Descriptor() ([]byte, []int) {
+	return file_message_v1_message_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *PushMsgResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *PushMsgResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type SyncMessageListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	SyncKey       int64                  `protobuf:"varint,2,opt,name=sync_key,json=syncKey,proto3" json:"sync_key,omitempty"` // last msg_id received by the client
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncMessageListRequest) Reset() {
+	*x = SyncMessageListRequest{}
+	mi := &file_message_v1_message_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncMessageListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncMessageListRequest) ProtoMessage() {}
+
+func (x *SyncMessageListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_message_v1_message_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncMessageListRequest.ProtoReflect.Descriptor instead.
+func (*SyncMessageListRequest) Descriptor() ([]byte, []int) {
+	return file_message_v1_message_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *SyncMessageListRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *SyncMessageListRequest) GetSyncKey() int64 {
+	if x != nil {
+		return x.SyncKey
+	}
+	return 0
+}
+
+type SyncMessageListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	MessageList   []*Message             `protobuf:"bytes,3,rep,name=message_list,json=messageList,proto3" json:"message_list,omitempty"`
+	NextSyncKey   int64                  `protobuf:"varint,4,opt,name=next_sync_key,json=nextSyncKey,proto3" json:"next_sync_key,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncMessageListResponse) Reset() {
+	*x = SyncMessageListResponse{}
+	mi := &file_message_v1_message_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncMessageListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncMessageListResponse) ProtoMessage() {}
+
+func (x *SyncMessageListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_message_v1_message_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncMessageListResponse.ProtoReflect.Descriptor instead.
+func (*SyncMessageListResponse) Descriptor() ([]byte, []int) {
+	return file_message_v1_message_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *SyncMessageListResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *SyncMessageListResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *SyncMessageListResponse) GetMessageList() []*Message {
+	if x != nil {
+		return x.MessageList
+	}
+	return nil
+}
+
+func (x *SyncMessageListResponse) GetNextSyncKey() int64 {
+	if x != nil {
+		return x.NextSyncKey
+	}
+	return 0
+}
+
 var File_message_v1_message_proto protoreflect.FileDescriptor
 
 const file_message_v1_message_proto_rawDesc = "" +
@@ -371,10 +587,25 @@ const file_message_v1_message_proto_rawDesc = "" +
 	"\x16GetMessageListResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x126\n" +
-	"\fmessage_list\x18\x03 \x03(\v2\x13.message.v1.MessageR\vmessageList2\xb9\x01\n" +
+	"\fmessage_list\x18\x03 \x03(\v2\x13.message.v1.MessageR\vmessageList\"?\n" +
+	"\x0ePushMsgRequest\x12-\n" +
+	"\amessage\x18\x01 \x01(\v2\x13.message.v1.MessageR\amessage\"7\n" +
+	"\x0fPushMsgResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\"L\n" +
+	"\x16SyncMessageListRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x19\n" +
+	"\bsync_key\x18\x02 \x01(\x03R\asyncKey\"\x9b\x01\n" +
+	"\x17SyncMessageListResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\x126\n" +
+	"\fmessage_list\x18\x03 \x03(\v2\x13.message.v1.MessageR\vmessageList\x12\"\n" +
+	"\rnext_sync_key\x18\x04 \x01(\x03R\vnextSyncKey2\xe1\x02\n" +
 	"\x0eMessageService\x12N\n" +
 	"\vSendMessage\x12\x1e.message.v1.SendMessageRequest\x1a\x1f.message.v1.SendMessageResponse\x12W\n" +
-	"\x0eGetMessageList\x12!.message.v1.GetMessageListRequest\x1a\".message.v1.GetMessageListResponseB(Z&ticktok-service/api/message/v1;messageb\x06proto3"
+	"\x0eGetMessageList\x12!.message.v1.GetMessageListRequest\x1a\".message.v1.GetMessageListResponse\x12J\n" +
+	"\x0fPushMsgToClient\x12\x1a.message.v1.PushMsgRequest\x1a\x1b.message.v1.PushMsgResponse\x12Z\n" +
+	"\x0fSyncMessageList\x12\".message.v1.SyncMessageListRequest\x1a#.message.v1.SyncMessageListResponseB(Z&ticktok-service/api/message/v1;messageb\x06proto3"
 
 var (
 	file_message_v1_message_proto_rawDescOnce sync.Once
@@ -388,25 +619,35 @@ func file_message_v1_message_proto_rawDescGZIP() []byte {
 	return file_message_v1_message_proto_rawDescData
 }
 
-var file_message_v1_message_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_message_v1_message_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_message_v1_message_proto_goTypes = []any{
-	(*SendMessageRequest)(nil),     // 0: message.v1.SendMessageRequest
-	(*SendMessageResponse)(nil),    // 1: message.v1.SendMessageResponse
-	(*GetMessageListRequest)(nil),  // 2: message.v1.GetMessageListRequest
-	(*Message)(nil),                // 3: message.v1.Message
-	(*GetMessageListResponse)(nil), // 4: message.v1.GetMessageListResponse
+	(*SendMessageRequest)(nil),      // 0: message.v1.SendMessageRequest
+	(*SendMessageResponse)(nil),     // 1: message.v1.SendMessageResponse
+	(*GetMessageListRequest)(nil),   // 2: message.v1.GetMessageListRequest
+	(*Message)(nil),                 // 3: message.v1.Message
+	(*GetMessageListResponse)(nil),  // 4: message.v1.GetMessageListResponse
+	(*PushMsgRequest)(nil),          // 5: message.v1.PushMsgRequest
+	(*PushMsgResponse)(nil),         // 6: message.v1.PushMsgResponse
+	(*SyncMessageListRequest)(nil),  // 7: message.v1.SyncMessageListRequest
+	(*SyncMessageListResponse)(nil), // 8: message.v1.SyncMessageListResponse
 }
 var file_message_v1_message_proto_depIdxs = []int32{
 	3, // 0: message.v1.GetMessageListResponse.message_list:type_name -> message.v1.Message
-	0, // 1: message.v1.MessageService.SendMessage:input_type -> message.v1.SendMessageRequest
-	2, // 2: message.v1.MessageService.GetMessageList:input_type -> message.v1.GetMessageListRequest
-	1, // 3: message.v1.MessageService.SendMessage:output_type -> message.v1.SendMessageResponse
-	4, // 4: message.v1.MessageService.GetMessageList:output_type -> message.v1.GetMessageListResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 1: message.v1.PushMsgRequest.message:type_name -> message.v1.Message
+	3, // 2: message.v1.SyncMessageListResponse.message_list:type_name -> message.v1.Message
+	0, // 3: message.v1.MessageService.SendMessage:input_type -> message.v1.SendMessageRequest
+	2, // 4: message.v1.MessageService.GetMessageList:input_type -> message.v1.GetMessageListRequest
+	5, // 5: message.v1.MessageService.PushMsgToClient:input_type -> message.v1.PushMsgRequest
+	7, // 6: message.v1.MessageService.SyncMessageList:input_type -> message.v1.SyncMessageListRequest
+	1, // 7: message.v1.MessageService.SendMessage:output_type -> message.v1.SendMessageResponse
+	4, // 8: message.v1.MessageService.GetMessageList:output_type -> message.v1.GetMessageListResponse
+	6, // 9: message.v1.MessageService.PushMsgToClient:output_type -> message.v1.PushMsgResponse
+	8, // 10: message.v1.MessageService.SyncMessageList:output_type -> message.v1.SyncMessageListResponse
+	7, // [7:11] is the sub-list for method output_type
+	3, // [3:7] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_message_v1_message_proto_init() }
@@ -420,7 +661,7 @@ func file_message_v1_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_v1_message_proto_rawDesc), len(file_message_v1_message_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

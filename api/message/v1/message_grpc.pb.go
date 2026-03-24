@@ -19,8 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	MessageService_SendMessage_FullMethodName    = "/message.v1.MessageService/SendMessage"
-	MessageService_GetMessageList_FullMethodName = "/message.v1.MessageService/GetMessageList"
+	MessageService_SendMessage_FullMethodName     = "/message.v1.MessageService/SendMessage"
+	MessageService_GetMessageList_FullMethodName  = "/message.v1.MessageService/GetMessageList"
+	MessageService_PushMsgToClient_FullMethodName = "/message.v1.MessageService/PushMsgToClient"
+	MessageService_SyncMessageList_FullMethodName = "/message.v1.MessageService/SyncMessageList"
 )
 
 // MessageServiceClient is the client API for MessageService service.
@@ -29,6 +31,10 @@ const (
 type MessageServiceClient interface {
 	SendMessage(ctx context.Context, in *SendMessageRequest, opts ...grpc.CallOption) (*SendMessageResponse, error)
 	GetMessageList(ctx context.Context, in *GetMessageListRequest, opts ...grpc.CallOption) (*GetMessageListResponse, error)
+	// PushMsgToClient is called by Push Worker to push a message to the target client on a specific node.
+	PushMsgToClient(ctx context.Context, in *PushMsgRequest, opts ...grpc.CallOption) (*PushMsgResponse, error)
+	// SyncMessageList is called by Gateway to sync offline messages using a sync_key (msg_id).
+	SyncMessageList(ctx context.Context, in *SyncMessageListRequest, opts ...grpc.CallOption) (*SyncMessageListResponse, error)
 }
 
 type messageServiceClient struct {
@@ -59,12 +65,36 @@ func (c *messageServiceClient) GetMessageList(ctx context.Context, in *GetMessag
 	return out, nil
 }
 
+func (c *messageServiceClient) PushMsgToClient(ctx context.Context, in *PushMsgRequest, opts ...grpc.CallOption) (*PushMsgResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PushMsgResponse)
+	err := c.cc.Invoke(ctx, MessageService_PushMsgToClient_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *messageServiceClient) SyncMessageList(ctx context.Context, in *SyncMessageListRequest, opts ...grpc.CallOption) (*SyncMessageListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SyncMessageListResponse)
+	err := c.cc.Invoke(ctx, MessageService_SyncMessageList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MessageServiceServer is the server API for MessageService service.
 // All implementations must embed UnimplementedMessageServiceServer
 // for forward compatibility.
 type MessageServiceServer interface {
 	SendMessage(context.Context, *SendMessageRequest) (*SendMessageResponse, error)
 	GetMessageList(context.Context, *GetMessageListRequest) (*GetMessageListResponse, error)
+	// PushMsgToClient is called by Push Worker to push a message to the target client on a specific node.
+	PushMsgToClient(context.Context, *PushMsgRequest) (*PushMsgResponse, error)
+	// SyncMessageList is called by Gateway to sync offline messages using a sync_key (msg_id).
+	SyncMessageList(context.Context, *SyncMessageListRequest) (*SyncMessageListResponse, error)
 	mustEmbedUnimplementedMessageServiceServer()
 }
 
@@ -80,6 +110,12 @@ func (UnimplementedMessageServiceServer) SendMessage(context.Context, *SendMessa
 }
 func (UnimplementedMessageServiceServer) GetMessageList(context.Context, *GetMessageListRequest) (*GetMessageListResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetMessageList not implemented")
+}
+func (UnimplementedMessageServiceServer) PushMsgToClient(context.Context, *PushMsgRequest) (*PushMsgResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PushMsgToClient not implemented")
+}
+func (UnimplementedMessageServiceServer) SyncMessageList(context.Context, *SyncMessageListRequest) (*SyncMessageListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SyncMessageList not implemented")
 }
 func (UnimplementedMessageServiceServer) mustEmbedUnimplementedMessageServiceServer() {}
 func (UnimplementedMessageServiceServer) testEmbeddedByValue()                        {}
@@ -138,6 +174,42 @@ func _MessageService_GetMessageList_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MessageService_PushMsgToClient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PushMsgRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).PushMsgToClient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessageService_PushMsgToClient_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).PushMsgToClient(ctx, req.(*PushMsgRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MessageService_SyncMessageList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncMessageListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MessageServiceServer).SyncMessageList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: MessageService_SyncMessageList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MessageServiceServer).SyncMessageList(ctx, req.(*SyncMessageListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // MessageService_ServiceDesc is the grpc.ServiceDesc for MessageService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +224,14 @@ var MessageService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMessageList",
 			Handler:    _MessageService_GetMessageList_Handler,
+		},
+		{
+			MethodName: "PushMsgToClient",
+			Handler:    _MessageService_PushMsgToClient_Handler,
+		},
+		{
+			MethodName: "SyncMessageList",
+			Handler:    _MessageService_SyncMessageList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
