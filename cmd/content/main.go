@@ -20,7 +20,7 @@ func main() {
 	// 初始化 MySQL
 	mysql.Init()
 	// 自动迁移建表
-	if err := mysql.DB.AutoMigrate(&model.Video{}); err != nil {
+	if err := model.AutoMigrate(mysql.DB); err != nil {
 		logger.Log.Fatal("AutoMigrate failed: " + err.Error())
 	}
 	logger.Log.Info("Database AutoMigrate successfully")
