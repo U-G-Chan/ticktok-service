@@ -13,7 +13,7 @@ mysql:
 
 redis:
   host: localhost
-  port: 16379
+  port: 6379
   password: ""
   db: 0
 
@@ -27,6 +27,13 @@ minio:
 etcd:
   endpoints:
     - localhost:2379
+
+kafka:
+  brokers:
+    - localhost:9092
+  chat_topic: chat_msg_topic
+  push_group_id: group_push
+  store_group_id: group_store
 
 jwt:
   secret: ticktok_secret_key

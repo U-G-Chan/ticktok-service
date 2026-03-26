@@ -19,6 +19,9 @@ func NewRouter() *gin.Engine {
 		auth.POST("/refresh", handler.Refresh)
 	}
 
+	// 开放的视频流接口 (不需要 token 也可以看，也可以带 token 看)
+	r.GET("/api/v1/feed", handler.GetFeed)
+
 	// Protected routes
 	api := r.Group("/api/v1")
 	api.Use(middleware.JWTMiddleware())
@@ -34,6 +37,14 @@ func NewRouter() *gin.Engine {
 		userGroup := api.Group("/user")
 		{
 			userGroup.GET("/info", handler.GetUserInfo)
+		}
+
+		// Content routes (Publish)
+		publishGroup := api.Group("/publish")
+		{
+			publishGroup.GET("/action/url", handler.GetVideoUploadURL) // 获取上传URL
+			publishGroup.POST("/action/confirm", handler.PublishVideo) // 确认发布
+			publishGroup.GET("/list", handler.GetPublishList)          // 获取发布列表
 		}
 
 		// Chatbot routes
