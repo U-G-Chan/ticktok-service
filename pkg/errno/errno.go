@@ -55,4 +55,7 @@ var (
 	// User errors
 	ErrUserNotFound      = NewErrNo(20001, "The user was not found.")
 	ErrPasswordIncorrect = NewErrNo(20002, "The password is incorrect.")
+
+	// Content errors
+	ErrVideoNotFound = NewErrNo(30001, "The video was not found.")
 )
