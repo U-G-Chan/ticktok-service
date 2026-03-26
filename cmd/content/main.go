@@ -3,8 +3,10 @@ package main
 import (
 	"log"
 	"net"
+	"ticktok-service/internal/content/model"
 	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/logger"
+	"ticktok-service/pkg/mysql"
 
 	"google.golang.org/grpc"
 )
@@ -14,6 +16,14 @@ func main() {
 		log.Fatalf("Init config failed: %v", err)
 	}
 	logger.Init(config.Config.LogLevel)
+
+	// 初始化 MySQL
+	mysql.Init()
+	// 自动迁移建表
+	if err := mysql.DB.AutoMigrate(&model.Video{}); err != nil {
+		logger.Log.Fatal("AutoMigrate failed: " + err.Error())
+	}
+	logger.Log.Info("Database AutoMigrate successfully")
 
 	port := ":" + config.Config.ContentService.Port
 	lis, err := net.Listen("tcp", port)
@@ -30,3 +40,4 @@ func main() {
 		logger.Log.Fatal("failed to serve: " + err.Error())
 	}
 }
+
