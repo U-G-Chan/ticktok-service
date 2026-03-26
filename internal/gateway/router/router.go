@@ -30,6 +30,12 @@ func NewRouter() *gin.Engine {
 			})
 		})
 
+		// User routes
+		userGroup := api.Group("/user")
+		{
+			userGroup.GET("/info", handler.GetUserInfo)
+		}
+
 		// Chatbot routes
 		chat := api.Group("/chat")
 		{

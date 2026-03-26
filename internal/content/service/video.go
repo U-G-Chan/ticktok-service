@@ -22,12 +22,15 @@ type ContentService interface {
 }
 
 type contentService struct {
-	repo repository.VideoRepository
-	// TODO: userServiceClient userv1.UserServiceClient (用于获取作者信息)
+	repo       repository.VideoRepository
+	userClient userv1.UserServiceClient
 }
 
-func NewContentService(repo repository.VideoRepository) ContentService {
-	return &contentService{repo: repo}
+func NewContentService(repo repository.VideoRepository, userClient userv1.UserServiceClient) ContentService {
+	return &contentService{
+		repo:       repo,
+		userClient: userClient,
+	}
 }
 
 func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID int64) ([]*contentv1.Video, int32, int64, error) {
@@ -42,9 +45,19 @@ func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID in
 	var nextID int64
 
 	for i, v := range videos {
+		// 调用 User 服务获取作者信息
+		var author *userv1.User
+		userInfoResp, err := s.userClient.GetUserInfo(ctx, &userv1.GetUserInfoRequest{UserId: v.AuthorID})
+		if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
+			author = userInfoResp.User
+		} else {
+			// 降级处理
+			author = &userv1.User{Id: v.AuthorID}
+		}
+
 		pbVideos = append(pbVideos, &contentv1.Video{
 			Id:             v.ID,
-			Author:         &userv1.User{Id: v.AuthorID}, // 暂时只填充ID，后续通过RPC获取详情
+			Author:         author,
 			PlayUrl:        v.PlayURL,
 			CoverUrl:       v.CoverURL,
 			FavoriteCount:  v.FavoriteCount,
@@ -113,9 +126,18 @@ func (s *contentService) GetPublishList(ctx context.Context, userID int64) ([]*c
 
 	var pbVideos []*contentv1.Video
 	for _, v := range videos {
+		// 调用 User 服务获取作者信息
+		var author *userv1.User
+		userInfoResp, err := s.userClient.GetUserInfo(ctx, &userv1.GetUserInfoRequest{UserId: v.AuthorID})
+		if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
+			author = userInfoResp.User
+		} else {
+			author = &userv1.User{Id: v.AuthorID}
+		}
+
 		pbVideos = append(pbVideos, &contentv1.Video{
 			Id:             v.ID,
-			Author:         &userv1.User{Id: v.AuthorID},
+			Author:         author,
 			PlayUrl:        v.PlayURL,
 			CoverUrl:       v.CoverURL,
 			FavoriteCount:  v.FavoriteCount,

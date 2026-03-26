@@ -13,6 +13,7 @@ import (
 	"ticktok-service/pkg/logger"
 	"ticktok-service/pkg/minio"
 	"ticktok-service/pkg/mysql"
+	"ticktok-service/pkg/rpc"
 
 	"google.golang.org/grpc"
 )
@@ -34,6 +35,14 @@ func main() {
 	// 初始化 MinIO
 	minio.Init()
 
+	// 初始化 gRPC 客户端 (连接 User 服务)
+	_, err := rpc.InitClientManager(map[string]string{
+		"user": config.Config.Microservices.User,
+	})
+	if err != nil {
+		logger.Log.Fatal("Failed to initialize RPC clients: " + err.Error())
+	}
+
 	port := ":" + config.Config.ContentService.Port
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
@@ -44,7 +53,8 @@ func main() {
 
 	// 依赖注入并注册服务
 	repo := repository.NewVideoRepository(mysql.DB)
-	svc := service.NewContentService(repo)
+	userClient := rpc.GetClientManager().UserClient
+	svc := service.NewContentService(repo, userClient)
 	h := handler.NewContentHandler(svc)
 	contentv1.RegisterContentServiceServer(s, h)
 
