@@ -26,6 +26,15 @@ func (r *UserRepo) FindByUsername(username string) (*model.User, error) {
 	return &user, nil
 }
 
+func (r *UserRepo) FindByIDs(ids []int64) ([]*model.User, error) {
+	var users []*model.User
+	if len(ids) == 0 {
+		return users, nil
+	}
+	err := r.DB.Where("id IN ?", ids).Find(&users).Error
+	return users, err
+}
+
 func (r *UserRepo) CountByUsername(username string) (int64, error) {
 	var count int64
 	err := r.DB.Model(&model.User{}).Where("username = ?", username).Count(&count).Error

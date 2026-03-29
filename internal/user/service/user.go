@@ -134,3 +134,49 @@ func (s *UserService) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequ
 		User: userInfo,
 	}, nil
 }
+
+func (s *UserService) MGetUserInfo(ctx context.Context, req *user.MGetUserInfoRequest) (*user.MGetUserInfoResponse, error) {
+	if len(req.UserIds) == 0 {
+		return &user.MGetUserInfoResponse{
+			Code:  int32(errno.Success.Code),
+			Msg:   errno.Success.Message,
+			Users: []*user.User{},
+		}, nil
+	}
+
+	// Remove duplicate user IDs
+	uniqueIDs := make([]int64, 0, len(req.UserIds))
+	seen := make(map[int64]struct{})
+	for _, id := range req.UserIds {
+		if _, ok := seen[id]; !ok {
+			seen[id] = struct{}{}
+			uniqueIDs = append(uniqueIDs, id)
+		}
+	}
+
+	users, err := s.userRepo.FindByIDs(uniqueIDs)
+	if err != nil {
+		return &user.MGetUserInfoResponse{
+			Code: int32(errno.ErrDatabase.Code),
+			Msg:  err.Error(),
+		}, nil
+	}
+
+	var pbUsers []*user.User
+	for _, u := range users {
+		pbUsers = append(pbUsers, &user.User{
+			Id:              int64(u.ID),
+			Name:            u.Username,
+			Avatar:          u.Avatar,
+			BackgroundImage: u.BackgroundImage,
+			Signature:       u.Signature,
+			// TODO: Implement other fields (follow count, etc.)
+		})
+	}
+
+	return &user.MGetUserInfoResponse{
+		Code:  int32(errno.Success.Code),
+		Msg:   errno.Success.Message,
+		Users: pbUsers,
+	}, nil
+}

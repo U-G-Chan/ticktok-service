@@ -8,6 +8,7 @@ service UserService {
     rpc Login(LoginRequest) returns (LoginResponse);
     rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
+    rpc MGetUserInfo(MGetUserInfoRequest) returns (MGetUserInfoResponse);
 }
 
 message LoginRequest {
@@ -59,4 +60,15 @@ message GetUserInfoResponse {
     int32 code = 1;
     string msg = 2;
     User user = 3;
+}
+
+message MGetUserInfoRequest {
+    repeated int64 user_ids = 1;
+    int64 token_user_id = 2;
+}
+
+message MGetUserInfoResponse {
+    int32 code = 1;
+    string msg = 2;
+    repeated User users = 3;
 }

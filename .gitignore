@@ -4,7 +4,9 @@
 
 **/uploads
 
+bin/
 
 data/
 
 config/config.yaml
+

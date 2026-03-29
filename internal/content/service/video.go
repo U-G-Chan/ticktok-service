@@ -40,18 +40,39 @@ func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID in
 		return nil, 0, 0, err
 	}
 
+	if len(videos) == 0 {
+		return nil, 0, 0, nil
+	}
+
+	// 1. Collect unique author IDs
+	authorIDs := make([]int64, 0)
+	authorMap := make(map[int64]*userv1.User)
+	seenAuthor := make(map[int64]struct{})
+
+	for _, v := range videos {
+		if _, ok := seenAuthor[v.AuthorID]; !ok {
+			seenAuthor[v.AuthorID] = struct{}{}
+			authorIDs = append(authorIDs, v.AuthorID)
+		}
+	}
+
+	// 2. Batch fetch user info
+	userInfoResp, err := s.userClient.MGetUserInfo(ctx, &userv1.MGetUserInfoRequest{UserIds: authorIDs})
+	if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
+		for _, u := range userInfoResp.Users {
+			authorMap[u.Id] = u
+		}
+	}
+
 	var pbVideos []*contentv1.Video
 	var nextScore int32
 	var nextID int64
 
 	for i, v := range videos {
-		// 调用 User 服务获取作者信息
-		var author *userv1.User
-		userInfoResp, err := s.userClient.GetUserInfo(ctx, &userv1.GetUserInfoRequest{UserId: v.AuthorID})
-		if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
-			author = userInfoResp.User
-		} else {
-			// 降级处理
+		// 3. Match author info
+		author, ok := authorMap[v.AuthorID]
+		if !ok {
+			// Fallback
 			author = &userv1.User{Id: v.AuthorID}
 		}
 
@@ -124,17 +145,22 @@ func (s *contentService) GetPublishList(ctx context.Context, userID int64) ([]*c
 		return nil, err
 	}
 
+	if len(videos) == 0 {
+		return nil, nil
+	}
+
+	// 1. Fetch user info (only one author for all these videos)
+	var author *userv1.User
+	userInfoResp, err := s.userClient.GetUserInfo(ctx, &userv1.GetUserInfoRequest{UserId: userID})
+	if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
+		author = userInfoResp.User
+	} else {
+		// Fallback
+		author = &userv1.User{Id: userID}
+	}
+
 	var pbVideos []*contentv1.Video
 	for _, v := range videos {
-		// 调用 User 服务获取作者信息
-		var author *userv1.User
-		userInfoResp, err := s.userClient.GetUserInfo(ctx, &userv1.GetUserInfoRequest{UserId: v.AuthorID})
-		if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
-			author = userInfoResp.User
-		} else {
-			author = &userv1.User{Id: v.AuthorID}
-		}
-
 		pbVideos = append(pbVideos, &contentv1.Video{
 			Id:             v.ID,
 			Author:         author,
