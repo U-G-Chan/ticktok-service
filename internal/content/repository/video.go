@@ -11,6 +11,7 @@ type VideoRepository interface {
 	Create(ctx context.Context, video *model.Video) error
 	Update(ctx context.Context, video *model.Video) error
 	GetByID(ctx context.Context, id int64) (*model.Video, error)
+	GetByIDs(ctx context.Context, ids []int64) ([]*model.Video, error)
 	GetFeed(ctx context.Context, lastScore int32, lastID int64, limit int) ([]*model.Video, error)
 	GetByAuthorID(ctx context.Context, authorID int64) ([]*model.Video, error)
 }
@@ -35,6 +36,15 @@ func (r *videoRepository) GetByID(ctx context.Context, id int64) (*model.Video, 
 	var video model.Video
 	err := r.db.WithContext(ctx).First(&video, id).Error
 	return &video, err
+}
+
+func (r *videoRepository) GetByIDs(ctx context.Context, ids []int64) ([]*model.Video, error) {
+	var videos []*model.Video
+	if len(ids) == 0 {
+		return videos, nil
+	}
+	err := r.db.WithContext(ctx).Where("id IN ?", ids).Find(&videos).Error
+	return videos, err
 }
 
 func (r *videoRepository) GetFeed(ctx context.Context, lastScore int32, lastID int64, limit int) ([]*model.Video, error) {
