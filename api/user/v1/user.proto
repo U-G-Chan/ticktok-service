@@ -9,6 +9,9 @@ service UserService {
     rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc GetUserInfo(GetUserInfoRequest) returns (GetUserInfoResponse);
     rpc MGetUserInfo(MGetUserInfoRequest) returns (MGetUserInfoResponse);
+    rpc RelationAction(RelationActionRequest) returns (RelationActionResponse);
+    rpc GetFollowList(GetFollowListRequest) returns (GetFollowListResponse);
+    rpc GetFollowerList(GetFollowerListRequest) returns (GetFollowerListResponse);
 }
 
 message LoginRequest {
@@ -71,4 +74,37 @@ message MGetUserInfoResponse {
     int32 code = 1;
     string msg = 2;
     repeated User users = 3;
+}
+
+message RelationActionRequest {
+    int64 user_id = 1;
+    int64 to_user_id = 2;
+    int32 action_type = 3; // 1-follow, 2-unfollow
+}
+
+message RelationActionResponse {
+    int32 code = 1;
+    string msg = 2;
+}
+
+message GetFollowListRequest {
+    int64 user_id = 1;
+    int64 token_user_id = 2;
+}
+
+message GetFollowListResponse {
+    int32 code = 1;
+    string msg = 2;
+    repeated User user_list = 3;
+}
+
+message GetFollowerListRequest {
+    int64 user_id = 1;
+    int64 token_user_id = 2;
+}
+
+message GetFollowerListResponse {
+    int32 code = 1;
+    string msg = 2;
+    repeated User user_list = 3;
 }

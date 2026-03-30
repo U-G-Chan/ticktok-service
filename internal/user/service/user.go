@@ -13,12 +13,14 @@ import (
 
 type UserService struct {
 	user.UnimplementedUserServiceServer
-	userRepo *repository.UserRepo
+	userRepo     *repository.UserRepo
+	relationRepo *repository.RelationRepo
 }
 
 func NewUserService() *UserService {
 	return &UserService{
-		userRepo: repository.NewUserRepo(mysql.DB),
+		userRepo:     repository.NewUserRepo(mysql.DB),
+		relationRepo: repository.NewRelationRepo(mysql.DB),
 	}
 }
 
@@ -28,7 +30,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (
 	if err != nil {
 		return &user.RegisterResponse{
 			Code: int32(errno.ErrDatabase.Code),
-			Msg:  errno.ErrDatabase.Message,
+			Msg:  "CountByUsername err: " + err.Error(),
 		}, nil
 	}
 	if count > 0 {
@@ -57,7 +59,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (
 	if err := s.userRepo.Create(newUser); err != nil {
 		return &user.RegisterResponse{
 			Code: int32(errno.ErrDatabase.Code),
-			Msg:  errno.ErrDatabase.Message,
+			Msg:  "Create user err: " + err.Error(),
 		}, nil
 	}
 
@@ -166,12 +168,21 @@ func (s *UserService) MGetUserInfo(ctx context.Context, req *user.MGetUserInfoRe
 
 	var pbUsers []*user.User
 	for _, u := range users {
+		isFollow := false
+		if req.TokenUserId > 0 {
+			rel, err := s.relationRepo.GetRelation(req.TokenUserId, int64(u.ID))
+			if err == nil && rel.Status == 1 {
+				isFollow = true
+			}
+		}
+
 		pbUsers = append(pbUsers, &user.User{
 			Id:              int64(u.ID),
 			Name:            u.Username,
 			Avatar:          u.Avatar,
 			BackgroundImage: u.BackgroundImage,
 			Signature:       u.Signature,
+			IsFollow:        isFollow,
 			// TODO: Implement other fields (follow count, etc.)
 		})
 	}
@@ -180,5 +191,118 @@ func (s *UserService) MGetUserInfo(ctx context.Context, req *user.MGetUserInfoRe
 		Code:  int32(errno.Success.Code),
 		Msg:   errno.Success.Message,
 		Users: pbUsers,
+	}, nil
+}
+
+func (s *UserService) RelationAction(ctx context.Context, req *user.RelationActionRequest) (*user.RelationActionResponse, error) {
+	if req.UserId == 0 || req.ToUserId == 0 || req.UserId == req.ToUserId {
+		return &user.RelationActionResponse{
+			Code: int32(errno.ErrValidation.Code),
+			Msg:  "invalid action",
+		}, nil
+	}
+
+	// 1-follow, 2-unfollow
+	status := int8(0)
+	if req.ActionType == 1 {
+		status = 1
+	} else if req.ActionType == 2 {
+		status = 0
+	} else {
+		return &user.RelationActionResponse{
+			Code: int32(errno.ErrValidation.Code),
+			Msg:  "invalid action type",
+		}, nil
+	}
+
+	rel, err := s.relationRepo.GetRelation(req.UserId, req.ToUserId)
+	if err != nil {
+		// Create new relation
+		rel = &model.Relation{
+			ID:       snowflake.GenerateMsgID(),
+			UserID:   req.UserId,
+			ToUserID: req.ToUserId,
+			Status:   status,
+		}
+	} else {
+		rel.Status = status
+	}
+
+	if err := s.relationRepo.Upsert(rel); err != nil {
+		return &user.RelationActionResponse{
+			Code: int32(errno.ErrDatabase.Code),
+			Msg:  err.Error(),
+		}, nil
+	}
+
+	return &user.RelationActionResponse{
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Message,
+	}, nil
+}
+
+func (s *UserService) GetFollowList(ctx context.Context, req *user.GetFollowListRequest) (*user.GetFollowListResponse, error) {
+	relations, err := s.relationRepo.GetFollowList(req.UserId)
+	if err != nil {
+		return &user.GetFollowListResponse{
+			Code: int32(errno.ErrDatabase.Code),
+			Msg:  err.Error(),
+		}, nil
+	}
+
+	var userIDs []int64
+	for _, r := range relations {
+		userIDs = append(userIDs, r.ToUserID)
+	}
+
+	mgetResp, err := s.MGetUserInfo(ctx, &user.MGetUserInfoRequest{
+		UserIds:     userIDs,
+		TokenUserId: req.TokenUserId,
+	})
+
+	if err != nil {
+		return &user.GetFollowListResponse{
+			Code: int32(errno.InternalServerError.Code),
+			Msg:  err.Error(),
+		}, nil
+	}
+
+	return &user.GetFollowListResponse{
+		Code:     int32(errno.Success.Code),
+		Msg:      errno.Success.Message,
+		UserList: mgetResp.Users,
+	}, nil
+}
+
+func (s *UserService) GetFollowerList(ctx context.Context, req *user.GetFollowerListRequest) (*user.GetFollowerListResponse, error) {
+	relations, err := s.relationRepo.GetFollowerList(req.UserId)
+	if err != nil {
+		return &user.GetFollowerListResponse{
+			Code: int32(errno.ErrDatabase.Code),
+			Msg:  err.Error(),
+		}, nil
+	}
+
+	var userIDs []int64
+	for _, r := range relations {
+		userIDs = append(userIDs, r.UserID)
+	}
+
+	mgetResp, err := s.MGetUserInfo(ctx, &user.MGetUserInfoRequest{
+		UserIds:     userIDs,
+		TokenUserId: req.TokenUserId,
+	})
+
+	if err != nil {
+		return &user.GetFollowerListResponse{
+			Code: int32(errno.InternalServerError.Code),
+			Msg:  err.Error(),
+		}, nil
+	}
+
+	return &user.GetFollowerListResponse{
+		Code:     int32(errno.Success.Code),
+		Msg:      errno.Success.Message,
+		UserList: mgetResp.Users,
 	}, nil
 }

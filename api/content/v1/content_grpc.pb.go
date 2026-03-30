@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	ContentService_GetFeed_FullMethodName           = "/content.v1.ContentService/GetFeed"
+	ContentService_GetFollowFeed_FullMethodName     = "/content.v1.ContentService/GetFollowFeed"
 	ContentService_GetVideoUploadURL_FullMethodName = "/content.v1.ContentService/GetVideoUploadURL"
 	ContentService_PublishVideo_FullMethodName      = "/content.v1.ContentService/PublishVideo"
 	ContentService_GetPublishList_FullMethodName    = "/content.v1.ContentService/GetPublishList"
@@ -34,6 +35,7 @@ const (
 type ContentServiceClient interface {
 	// --- Feed 流 ---
 	GetFeed(ctx context.Context, in *GetFeedRequest, opts ...grpc.CallOption) (*GetFeedResponse, error)
+	GetFollowFeed(ctx context.Context, in *GetFollowFeedRequest, opts ...grpc.CallOption) (*GetFollowFeedResponse, error)
 	// --- 视频发布 (两步走) ---
 	// Step 1: 申请上传 URL
 	GetVideoUploadURL(ctx context.Context, in *GetVideoUploadURLRequest, opts ...grpc.CallOption) (*GetVideoUploadURLResponse, error)
@@ -59,6 +61,16 @@ func (c *contentServiceClient) GetFeed(ctx context.Context, in *GetFeedRequest, 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetFeedResponse)
 	err := c.cc.Invoke(ctx, ContentService_GetFeed_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetFollowFeed(ctx context.Context, in *GetFollowFeedRequest, opts ...grpc.CallOption) (*GetFollowFeedResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFollowFeedResponse)
+	err := c.cc.Invoke(ctx, ContentService_GetFollowFeed_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,6 +143,7 @@ func (c *contentServiceClient) GetCommentList(ctx context.Context, in *GetCommen
 type ContentServiceServer interface {
 	// --- Feed 流 ---
 	GetFeed(context.Context, *GetFeedRequest) (*GetFeedResponse, error)
+	GetFollowFeed(context.Context, *GetFollowFeedRequest) (*GetFollowFeedResponse, error)
 	// --- 视频发布 (两步走) ---
 	// Step 1: 申请上传 URL
 	GetVideoUploadURL(context.Context, *GetVideoUploadURLRequest) (*GetVideoUploadURLResponse, error)
@@ -154,6 +167,9 @@ type UnimplementedContentServiceServer struct{}
 
 func (UnimplementedContentServiceServer) GetFeed(context.Context, *GetFeedRequest) (*GetFeedResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFeed not implemented")
+}
+func (UnimplementedContentServiceServer) GetFollowFeed(context.Context, *GetFollowFeedRequest) (*GetFollowFeedResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFollowFeed not implemented")
 }
 func (UnimplementedContentServiceServer) GetVideoUploadURL(context.Context, *GetVideoUploadURLRequest) (*GetVideoUploadURLResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetVideoUploadURL not implemented")
@@ -208,6 +224,24 @@ func _ContentService_GetFeed_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ContentServiceServer).GetFeed(ctx, req.(*GetFeedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetFollowFeed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFollowFeedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetFollowFeed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_GetFollowFeed_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetFollowFeed(ctx, req.(*GetFollowFeedRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -330,6 +364,10 @@ var ContentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetFeed",
 			Handler:    _ContentService_GetFeed_Handler,
+		},
+		{
+			MethodName: "GetFollowFeed",
+			Handler:    _ContentService_GetFollowFeed_Handler,
 		},
 		{
 			MethodName: "GetVideoUploadURL",

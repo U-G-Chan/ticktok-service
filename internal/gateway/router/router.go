@@ -26,6 +26,8 @@ func NewRouter() *gin.Engine {
 	api := r.Group("/api/v1")
 	api.Use(middleware.JWTMiddleware())
 	{
+		api.GET("/feed/follow", handler.GetFollowFeed)
+
 		api.GET("/ping", func(c *gin.Context) {
 			c.JSON(200, gin.H{
 				"message": "pong",
@@ -37,6 +39,13 @@ func NewRouter() *gin.Engine {
 		userGroup := api.Group("/user")
 		{
 			userGroup.GET("/info", handler.GetUserInfo)
+		}
+
+		relationGroup := api.Group("/relation")
+		{
+			relationGroup.POST("/action", handler.RelationAction)
+			relationGroup.GET("/follow/list", handler.GetFollowList)
+			relationGroup.GET("/follower/list", handler.GetFollowerList)
 		}
 
 		// Content routes (Publish)

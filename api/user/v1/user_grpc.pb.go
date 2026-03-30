@@ -19,10 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_Login_FullMethodName        = "/user.v1.UserService/Login"
-	UserService_Register_FullMethodName     = "/user.v1.UserService/Register"
-	UserService_GetUserInfo_FullMethodName  = "/user.v1.UserService/GetUserInfo"
-	UserService_MGetUserInfo_FullMethodName = "/user.v1.UserService/MGetUserInfo"
+	UserService_Login_FullMethodName           = "/user.v1.UserService/Login"
+	UserService_Register_FullMethodName        = "/user.v1.UserService/Register"
+	UserService_GetUserInfo_FullMethodName     = "/user.v1.UserService/GetUserInfo"
+	UserService_MGetUserInfo_FullMethodName    = "/user.v1.UserService/MGetUserInfo"
+	UserService_RelationAction_FullMethodName  = "/user.v1.UserService/RelationAction"
+	UserService_GetFollowList_FullMethodName   = "/user.v1.UserService/GetFollowList"
+	UserService_GetFollowerList_FullMethodName = "/user.v1.UserService/GetFollowerList"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -33,6 +36,9 @@ type UserServiceClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 	MGetUserInfo(ctx context.Context, in *MGetUserInfoRequest, opts ...grpc.CallOption) (*MGetUserInfoResponse, error)
+	RelationAction(ctx context.Context, in *RelationActionRequest, opts ...grpc.CallOption) (*RelationActionResponse, error)
+	GetFollowList(ctx context.Context, in *GetFollowListRequest, opts ...grpc.CallOption) (*GetFollowListResponse, error)
+	GetFollowerList(ctx context.Context, in *GetFollowerListRequest, opts ...grpc.CallOption) (*GetFollowerListResponse, error)
 }
 
 type userServiceClient struct {
@@ -83,6 +89,36 @@ func (c *userServiceClient) MGetUserInfo(ctx context.Context, in *MGetUserInfoRe
 	return out, nil
 }
 
+func (c *userServiceClient) RelationAction(ctx context.Context, in *RelationActionRequest, opts ...grpc.CallOption) (*RelationActionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RelationActionResponse)
+	err := c.cc.Invoke(ctx, UserService_RelationAction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetFollowList(ctx context.Context, in *GetFollowListRequest, opts ...grpc.CallOption) (*GetFollowListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFollowListResponse)
+	err := c.cc.Invoke(ctx, UserService_GetFollowList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetFollowerList(ctx context.Context, in *GetFollowerListRequest, opts ...grpc.CallOption) (*GetFollowerListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFollowerListResponse)
+	err := c.cc.Invoke(ctx, UserService_GetFollowerList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -91,6 +127,9 @@ type UserServiceServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
 	MGetUserInfo(context.Context, *MGetUserInfoRequest) (*MGetUserInfoResponse, error)
+	RelationAction(context.Context, *RelationActionRequest) (*RelationActionResponse, error)
+	GetFollowList(context.Context, *GetFollowListRequest) (*GetFollowListResponse, error)
+	GetFollowerList(context.Context, *GetFollowerListRequest) (*GetFollowerListResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -112,6 +151,15 @@ func (UnimplementedUserServiceServer) GetUserInfo(context.Context, *GetUserInfoR
 }
 func (UnimplementedUserServiceServer) MGetUserInfo(context.Context, *MGetUserInfoRequest) (*MGetUserInfoResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method MGetUserInfo not implemented")
+}
+func (UnimplementedUserServiceServer) RelationAction(context.Context, *RelationActionRequest) (*RelationActionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RelationAction not implemented")
+}
+func (UnimplementedUserServiceServer) GetFollowList(context.Context, *GetFollowListRequest) (*GetFollowListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFollowList not implemented")
+}
+func (UnimplementedUserServiceServer) GetFollowerList(context.Context, *GetFollowerListRequest) (*GetFollowerListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFollowerList not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -206,6 +254,60 @@ func _UserService_MGetUserInfo_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_RelationAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RelationActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).RelationAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_RelationAction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).RelationAction(ctx, req.(*RelationActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetFollowList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFollowListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetFollowList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetFollowList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetFollowList(ctx, req.(*GetFollowListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetFollowerList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFollowerListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetFollowerList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetFollowerList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetFollowerList(ctx, req.(*GetFollowerListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +330,18 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MGetUserInfo",
 			Handler:    _UserService_MGetUserInfo_Handler,
+		},
+		{
+			MethodName: "RelationAction",
+			Handler:    _UserService_RelationAction_Handler,
+		},
+		{
+			MethodName: "GetFollowList",
+			Handler:    _UserService_GetFollowList_Handler,
+		},
+		{
+			MethodName: "GetFollowerList",
+			Handler:    _UserService_GetFollowerList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

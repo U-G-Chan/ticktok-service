@@ -37,6 +37,24 @@ func (h *ContentHandler) GetFeed(ctx context.Context, req *contentv1.GetFeedRequ
 	}, nil
 }
 
+func (h *ContentHandler) GetFollowFeed(ctx context.Context, req *contentv1.GetFollowFeedRequest) (*contentv1.GetFollowFeedResponse, error) {
+	videos, nextTime, err := h.svc.GetFollowFeed(ctx, req.UserId, req.LastTime, req.Token)
+	if err != nil {
+		code, msg := errno.DecodeErr(err)
+		return &contentv1.GetFollowFeedResponse{
+			Code: int32(code),
+			Msg:  msg,
+		}, nil
+	}
+
+	return &contentv1.GetFollowFeedResponse{
+		Code:      int32(errno.Success.Code),
+		Msg:       errno.Success.Message,
+		VideoList: videos,
+		NextTime:  nextTime,
+	}, nil
+}
+
 func (h *ContentHandler) GetVideoUploadURL(ctx context.Context, req *contentv1.GetVideoUploadURLRequest) (*contentv1.GetVideoUploadURLResponse, error) {
 	url, videoID, err := h.svc.GetVideoUploadURL(ctx, req.AuthorId, req.Title)
 	if err != nil {

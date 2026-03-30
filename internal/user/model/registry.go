@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 func getAllModels() []interface{} {
 	return []interface{}{
 		&User{},
+		&Relation{},
 		// &NewTable{}, // Future models go here
 	}
 }

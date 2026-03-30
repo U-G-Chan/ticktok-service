@@ -625,6 +625,342 @@ func (x *MGetUserInfoResponse) GetUsers() []*User {
 	return nil
 }
 
+type RelationActionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ToUserId      int64                  `protobuf:"varint,2,opt,name=to_user_id,json=toUserId,proto3" json:"to_user_id,omitempty"`
+	ActionType    int32                  `protobuf:"varint,3,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"` // 1-follow, 2-unfollow
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RelationActionRequest) Reset() {
+	*x = RelationActionRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RelationActionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RelationActionRequest) ProtoMessage() {}
+
+func (x *RelationActionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RelationActionRequest.ProtoReflect.Descriptor instead.
+func (*RelationActionRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *RelationActionRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *RelationActionRequest) GetToUserId() int64 {
+	if x != nil {
+		return x.ToUserId
+	}
+	return 0
+}
+
+func (x *RelationActionRequest) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+type RelationActionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RelationActionResponse) Reset() {
+	*x = RelationActionResponse{}
+	mi := &file_user_v1_user_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RelationActionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RelationActionResponse) ProtoMessage() {}
+
+func (x *RelationActionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RelationActionResponse.ProtoReflect.Descriptor instead.
+func (*RelationActionResponse) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *RelationActionResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *RelationActionResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type GetFollowListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	TokenUserId   int64                  `protobuf:"varint,2,opt,name=token_user_id,json=tokenUserId,proto3" json:"token_user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFollowListRequest) Reset() {
+	*x = GetFollowListRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFollowListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFollowListRequest) ProtoMessage() {}
+
+func (x *GetFollowListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFollowListRequest.ProtoReflect.Descriptor instead.
+func (*GetFollowListRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *GetFollowListRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *GetFollowListRequest) GetTokenUserId() int64 {
+	if x != nil {
+		return x.TokenUserId
+	}
+	return 0
+}
+
+type GetFollowListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	UserList      []*User                `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFollowListResponse) Reset() {
+	*x = GetFollowListResponse{}
+	mi := &file_user_v1_user_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFollowListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFollowListResponse) ProtoMessage() {}
+
+func (x *GetFollowListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFollowListResponse.ProtoReflect.Descriptor instead.
+func (*GetFollowListResponse) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetFollowListResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *GetFollowListResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GetFollowListResponse) GetUserList() []*User {
+	if x != nil {
+		return x.UserList
+	}
+	return nil
+}
+
+type GetFollowerListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	TokenUserId   int64                  `protobuf:"varint,2,opt,name=token_user_id,json=tokenUserId,proto3" json:"token_user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFollowerListRequest) Reset() {
+	*x = GetFollowerListRequest{}
+	mi := &file_user_v1_user_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFollowerListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFollowerListRequest) ProtoMessage() {}
+
+func (x *GetFollowerListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFollowerListRequest.ProtoReflect.Descriptor instead.
+func (*GetFollowerListRequest) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetFollowerListRequest) GetUserId() int64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *GetFollowerListRequest) GetTokenUserId() int64 {
+	if x != nil {
+		return x.TokenUserId
+	}
+	return 0
+}
+
+type GetFollowerListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	UserList      []*User                `protobuf:"bytes,3,rep,name=user_list,json=userList,proto3" json:"user_list,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetFollowerListResponse) Reset() {
+	*x = GetFollowerListResponse{}
+	mi := &file_user_v1_user_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetFollowerListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetFollowerListResponse) ProtoMessage() {}
+
+func (x *GetFollowerListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_user_v1_user_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetFollowerListResponse.ProtoReflect.Descriptor instead.
+func (*GetFollowerListResponse) Descriptor() ([]byte, []int) {
+	return file_user_v1_user_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetFollowerListResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *GetFollowerListResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GetFollowerListResponse) GetUserList() []*User {
+	if x != nil {
+		return x.UserList
+	}
+	return nil
+}
+
 var File_user_v1_user_proto protoreflect.FileDescriptor
 
 const file_user_v1_user_proto_rawDesc = "" +
@@ -675,12 +1011,38 @@ const file_user_v1_user_proto_rawDesc = "" +
 	"\x14MGetUserInfoResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x12#\n" +
-	"\x05users\x18\x03 \x03(\v2\r.user.v1.UserR\x05users2\x9d\x02\n" +
+	"\x05users\x18\x03 \x03(\v2\r.user.v1.UserR\x05users\"o\n" +
+	"\x15RelationActionRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x1c\n" +
+	"\n" +
+	"to_user_id\x18\x02 \x01(\x03R\btoUserId\x12\x1f\n" +
+	"\vaction_type\x18\x03 \x01(\x05R\n" +
+	"actionType\">\n" +
+	"\x16RelationActionResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\"S\n" +
+	"\x14GetFollowListRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\"\n" +
+	"\rtoken_user_id\x18\x02 \x01(\x03R\vtokenUserId\"i\n" +
+	"\x15GetFollowListResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\x12*\n" +
+	"\tuser_list\x18\x03 \x03(\v2\r.user.v1.UserR\buserList\"U\n" +
+	"\x16GetFollowerListRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\"\n" +
+	"\rtoken_user_id\x18\x02 \x01(\x03R\vtokenUserId\"k\n" +
+	"\x17GetFollowerListResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\x12*\n" +
+	"\tuser_list\x18\x03 \x03(\v2\r.user.v1.UserR\buserList2\x96\x04\n" +
 	"\vUserService\x126\n" +
 	"\x05Login\x12\x15.user.v1.LoginRequest\x1a\x16.user.v1.LoginResponse\x12?\n" +
 	"\bRegister\x12\x18.user.v1.RegisterRequest\x1a\x19.user.v1.RegisterResponse\x12H\n" +
 	"\vGetUserInfo\x12\x1b.user.v1.GetUserInfoRequest\x1a\x1c.user.v1.GetUserInfoResponse\x12K\n" +
-	"\fMGetUserInfo\x12\x1c.user.v1.MGetUserInfoRequest\x1a\x1d.user.v1.MGetUserInfoResponseB\"Z ticktok-service/api/user/v1;userb\x06proto3"
+	"\fMGetUserInfo\x12\x1c.user.v1.MGetUserInfoRequest\x1a\x1d.user.v1.MGetUserInfoResponse\x12Q\n" +
+	"\x0eRelationAction\x12\x1e.user.v1.RelationActionRequest\x1a\x1f.user.v1.RelationActionResponse\x12N\n" +
+	"\rGetFollowList\x12\x1d.user.v1.GetFollowListRequest\x1a\x1e.user.v1.GetFollowListResponse\x12T\n" +
+	"\x0fGetFollowerList\x12\x1f.user.v1.GetFollowerListRequest\x1a .user.v1.GetFollowerListResponseB\"Z ticktok-service/api/user/v1;userb\x06proto3"
 
 var (
 	file_user_v1_user_proto_rawDescOnce sync.Once
@@ -694,34 +1056,48 @@ func file_user_v1_user_proto_rawDescGZIP() []byte {
 	return file_user_v1_user_proto_rawDescData
 }
 
-var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_user_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_user_v1_user_proto_goTypes = []any{
-	(*LoginRequest)(nil),         // 0: user.v1.LoginRequest
-	(*LoginResponse)(nil),        // 1: user.v1.LoginResponse
-	(*RegisterRequest)(nil),      // 2: user.v1.RegisterRequest
-	(*RegisterResponse)(nil),     // 3: user.v1.RegisterResponse
-	(*GetUserInfoRequest)(nil),   // 4: user.v1.GetUserInfoRequest
-	(*User)(nil),                 // 5: user.v1.User
-	(*GetUserInfoResponse)(nil),  // 6: user.v1.GetUserInfoResponse
-	(*MGetUserInfoRequest)(nil),  // 7: user.v1.MGetUserInfoRequest
-	(*MGetUserInfoResponse)(nil), // 8: user.v1.MGetUserInfoResponse
+	(*LoginRequest)(nil),            // 0: user.v1.LoginRequest
+	(*LoginResponse)(nil),           // 1: user.v1.LoginResponse
+	(*RegisterRequest)(nil),         // 2: user.v1.RegisterRequest
+	(*RegisterResponse)(nil),        // 3: user.v1.RegisterResponse
+	(*GetUserInfoRequest)(nil),      // 4: user.v1.GetUserInfoRequest
+	(*User)(nil),                    // 5: user.v1.User
+	(*GetUserInfoResponse)(nil),     // 6: user.v1.GetUserInfoResponse
+	(*MGetUserInfoRequest)(nil),     // 7: user.v1.MGetUserInfoRequest
+	(*MGetUserInfoResponse)(nil),    // 8: user.v1.MGetUserInfoResponse
+	(*RelationActionRequest)(nil),   // 9: user.v1.RelationActionRequest
+	(*RelationActionResponse)(nil),  // 10: user.v1.RelationActionResponse
+	(*GetFollowListRequest)(nil),    // 11: user.v1.GetFollowListRequest
+	(*GetFollowListResponse)(nil),   // 12: user.v1.GetFollowListResponse
+	(*GetFollowerListRequest)(nil),  // 13: user.v1.GetFollowerListRequest
+	(*GetFollowerListResponse)(nil), // 14: user.v1.GetFollowerListResponse
 }
 var file_user_v1_user_proto_depIdxs = []int32{
-	5, // 0: user.v1.GetUserInfoResponse.user:type_name -> user.v1.User
-	5, // 1: user.v1.MGetUserInfoResponse.users:type_name -> user.v1.User
-	0, // 2: user.v1.UserService.Login:input_type -> user.v1.LoginRequest
-	2, // 3: user.v1.UserService.Register:input_type -> user.v1.RegisterRequest
-	4, // 4: user.v1.UserService.GetUserInfo:input_type -> user.v1.GetUserInfoRequest
-	7, // 5: user.v1.UserService.MGetUserInfo:input_type -> user.v1.MGetUserInfoRequest
-	1, // 6: user.v1.UserService.Login:output_type -> user.v1.LoginResponse
-	3, // 7: user.v1.UserService.Register:output_type -> user.v1.RegisterResponse
-	6, // 8: user.v1.UserService.GetUserInfo:output_type -> user.v1.GetUserInfoResponse
-	8, // 9: user.v1.UserService.MGetUserInfo:output_type -> user.v1.MGetUserInfoResponse
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5,  // 0: user.v1.GetUserInfoResponse.user:type_name -> user.v1.User
+	5,  // 1: user.v1.MGetUserInfoResponse.users:type_name -> user.v1.User
+	5,  // 2: user.v1.GetFollowListResponse.user_list:type_name -> user.v1.User
+	5,  // 3: user.v1.GetFollowerListResponse.user_list:type_name -> user.v1.User
+	0,  // 4: user.v1.UserService.Login:input_type -> user.v1.LoginRequest
+	2,  // 5: user.v1.UserService.Register:input_type -> user.v1.RegisterRequest
+	4,  // 6: user.v1.UserService.GetUserInfo:input_type -> user.v1.GetUserInfoRequest
+	7,  // 7: user.v1.UserService.MGetUserInfo:input_type -> user.v1.MGetUserInfoRequest
+	9,  // 8: user.v1.UserService.RelationAction:input_type -> user.v1.RelationActionRequest
+	11, // 9: user.v1.UserService.GetFollowList:input_type -> user.v1.GetFollowListRequest
+	13, // 10: user.v1.UserService.GetFollowerList:input_type -> user.v1.GetFollowerListRequest
+	1,  // 11: user.v1.UserService.Login:output_type -> user.v1.LoginResponse
+	3,  // 12: user.v1.UserService.Register:output_type -> user.v1.RegisterResponse
+	6,  // 13: user.v1.UserService.GetUserInfo:output_type -> user.v1.GetUserInfoResponse
+	8,  // 14: user.v1.UserService.MGetUserInfo:output_type -> user.v1.MGetUserInfoResponse
+	10, // 15: user.v1.UserService.RelationAction:output_type -> user.v1.RelationActionResponse
+	12, // 16: user.v1.UserService.GetFollowList:output_type -> user.v1.GetFollowListResponse
+	14, // 17: user.v1.UserService.GetFollowerList:output_type -> user.v1.GetFollowerListResponse
+	11, // [11:18] is the sub-list for method output_type
+	4,  // [4:11] is the sub-list for method input_type
+	4,  // [4:4] is the sub-list for extension type_name
+	4,  // [4:4] is the sub-list for extension extendee
+	0,  // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_user_v1_user_proto_init() }
@@ -735,7 +1111,7 @@ func file_user_v1_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_v1_user_proto_rawDesc), len(file_user_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

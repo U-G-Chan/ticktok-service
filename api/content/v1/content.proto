@@ -9,6 +9,7 @@ import "user/v1/user.proto";
 service ContentService {
     // --- Feed 流 ---
     rpc GetFeed(GetFeedRequest) returns (GetFeedResponse);
+    rpc GetFollowFeed(GetFollowFeedRequest) returns (GetFollowFeedResponse);
 
     // --- 视频发布 (两步走) ---
     // Step 1: 申请上传 URL
@@ -58,6 +59,19 @@ message GetFeedResponse {
     repeated Video video_list = 3;
     int32 next_score = 4; // 返回给客户端的下一页 score 游标
     int64 next_id = 5;    // 返回给客户端的下一页 id 游标
+}
+
+message GetFollowFeedRequest {
+    int64 user_id = 1;
+    int64 last_time = 2; // timestamp in ms
+    string token = 3;
+}
+
+message GetFollowFeedResponse {
+    int32 code = 1;
+    string msg = 2;
+    repeated Video video_list = 3;
+    int64 next_time = 4;
 }
 
 // 视频发布 Step 1

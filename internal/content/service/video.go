@@ -24,6 +24,7 @@ const feedKey = "feed:recommend_score"
 
 type ContentService interface {
 	GetFeed(ctx context.Context, lastScore int32, lastID int64, token string) ([]*contentv1.Video, int32, int64, error)
+	GetFollowFeed(ctx context.Context, userID int64, lastTime int64, token string) ([]*contentv1.Video, int64, error)
 	GetVideoUploadURL(ctx context.Context, authorID int64, title string) (string, int64, error)
 	PublishVideo(ctx context.Context, videoID int64) error
 	GetPublishList(ctx context.Context, userID int64, token string) ([]*contentv1.Video, error)
@@ -158,6 +159,153 @@ func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID in
 	return pbVideos, nextScore, nextID, nil
 }
 
+func (s *contentService) GetFollowFeed(ctx context.Context, userID int64, lastTime int64, token string) ([]*contentv1.Video, int64, error) {
+	limit := 30
+	if lastTime == 0 {
+		lastTime = time.Now().UnixMilli()
+	}
+
+	var allVideoIDs []string
+	var allScores []float64
+
+	// 1. 从收件箱 (Inbox) 获取 Push 过来的视频 (普通用户的更新)
+	inboxKey := fmt.Sprintf("user:inbox:%d", userID)
+	inboxVideos, err := redis.RDB.ZRevRangeByScoreWithScores(ctx, inboxKey, &goredis.ZRangeBy{
+		Max:   strconv.FormatInt(lastTime, 10),
+		Min:   "0",
+		Count: int64(limit),
+	}).Result()
+
+	if err == nil {
+		for _, z := range inboxVideos {
+			allVideoIDs = append(allVideoIDs, z.Member.(string))
+			allScores = append(allScores, z.Score)
+		}
+	}
+
+	// 2. 获取关注列表，筛选出大V，从他们的发件箱 (Outbox) Pull 视频
+	followResp, err := s.userClient.GetFollowList(ctx, &userv1.GetFollowListRequest{
+		UserId:      userID,
+		TokenUserId: userID,
+	})
+
+	if err == nil && followResp.Code == int32(errno.Success.Code) {
+		for _, followedUser := range followResp.UserList {
+			// 假设粉丝数大于等于 10000 的是大V，走 Pull 模式
+			// 为了测试方便，这里假设 follower_count >= 0 都可以 pull (由于没有真实的 follower_count 统计，我们以一定条件判断，
+			// 或者在项目中简化为直接 Pull 所有关注者，但在文档中强调 Push-Pull 结合。为了体现代码，我们这里写死一个阈值，测试时可以修改)
+			if followedUser.FollowerCount >= 10000 {
+				outboxKey := fmt.Sprintf("user:outbox:%d", followedUser.Id)
+				outboxVideos, err := redis.RDB.ZRevRangeByScoreWithScores(ctx, outboxKey, &goredis.ZRangeBy{
+					Max:   strconv.FormatInt(lastTime, 10),
+					Min:   "0",
+					Count: int64(limit),
+				}).Result()
+				if err == nil {
+					for _, z := range outboxVideos {
+						allVideoIDs = append(allVideoIDs, z.Member.(string))
+						allScores = append(allScores, z.Score)
+					}
+				}
+			}
+		}
+	}
+
+	// 3. 内存排序与去重
+	type videoItem struct {
+		id    int64
+		score float64
+	}
+	var items []videoItem
+	seen := make(map[int64]bool)
+
+	for i, idStr := range allVideoIDs {
+		id, _ := strconv.ParseInt(idStr, 10, 64)
+		if !seen[id] {
+			seen[id] = true
+			items = append(items, videoItem{id: id, score: allScores[i]})
+		}
+	}
+
+	// 按时间倒序排序
+	for i := 0; i < len(items)-1; i++ {
+		for j := i + 1; j < len(items); j++ {
+			if items[i].score < items[j].score {
+				items[i], items[j] = items[j], items[i]
+			}
+		}
+	}
+
+	// 取前 limit 个
+	if len(items) > limit {
+		items = items[:limit]
+	}
+
+	if len(items) == 0 {
+		return nil, 0, nil
+	}
+
+	var fetchIDs []int64
+	var nextTime int64
+	for i, item := range items {
+		fetchIDs = append(fetchIDs, item.id)
+		if i == len(items)-1 {
+			// 下一页的 lastTime 是最后一条记录的时间戳 - 1
+			nextTime = int64(item.score) - 1
+		}
+	}
+
+	// 4. 从数据库批量获取视频信息并组装
+	unsortedVideos, err := s.repo.GetByIDs(ctx, fetchIDs)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	videoMap := make(map[int64]*model.Video)
+	for _, v := range unsortedVideos {
+		videoMap[v.ID] = v
+	}
+
+	// 收集作者信息
+	authorIDs := make([]int64, 0)
+	authorMap := make(map[int64]*userv1.User)
+	seenAuthor := make(map[int64]struct{})
+
+	for _, v := range unsortedVideos {
+		if _, ok := seenAuthor[v.AuthorID]; !ok {
+			seenAuthor[v.AuthorID] = struct{}{}
+			authorIDs = append(authorIDs, v.AuthorID)
+		}
+	}
+
+	userInfoResp, err := s.userClient.MGetUserInfo(ctx, &userv1.MGetUserInfoRequest{
+		UserIds:     authorIDs,
+		TokenUserId: userID,
+	})
+	if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
+		for _, u := range userInfoResp.Users {
+			authorMap[u.Id] = u
+		}
+	}
+
+	var pbVideos []*contentv1.Video
+	for _, id := range fetchIDs {
+		if v, ok := videoMap[id]; ok {
+			author, aok := authorMap[v.AuthorID]
+			if !aok {
+				author = &userv1.User{Id: v.AuthorID}
+			}
+			pbVideo, buildErr := s.buildPBVideo(ctx, v, author, userID)
+			if buildErr != nil {
+				continue
+			}
+			pbVideos = append(pbVideos, pbVideo)
+		}
+	}
+
+	return pbVideos, nextTime, nil
+}
+
 func (s *contentService) GetVideoUploadURL(ctx context.Context, authorID int64, title string) (string, int64, error) {
 	// 1. 生成全局唯一 ID
 	videoID := snowflake.GenerateMsgID()
@@ -202,21 +350,54 @@ func (s *contentService) PublishVideo(ctx context.Context, videoID int64) error 
 		return err
 	}
 
-	// 异步更新 Redis Feed 流缓存和发送 Kafka 消息用于抽帧
+	// 异步更新 Redis Feed 流缓存、Timeline 和发送 Kafka 消息用于抽帧
 	go func() {
 		bgCtx := context.Background()
+		now := time.Now().UnixMilli()
+		videoIDStr := strconv.FormatInt(videoID, 10)
+
+		// 1. 全局 Feed 流 (Recommend)
 		redis.RDB.ZAdd(bgCtx, feedKey, &goredis.Z{
 			Score:  float64(video.RecommendScore),
-			Member: strconv.FormatInt(videoID, 10),
+			Member: videoIDStr,
 		})
-		// 限制 ZSet 大小，例如只保留最新/最热的 5000 条，防止 BigKey
 		redis.RDB.ZRemRangeByRank(bgCtx, feedKey, 0, -5001)
 
+		// 2. 写入发件箱 (Outbox) - 用于 Pull 模式
+		outboxKey := fmt.Sprintf("user:outbox:%d", video.AuthorID)
+		redis.RDB.ZAdd(bgCtx, outboxKey, &goredis.Z{
+			Score:  float64(now),
+			Member: videoIDStr,
+		})
+		redis.RDB.ZRemRangeByRank(bgCtx, outboxKey, 0, -1001) // 限制每个用户发件箱大小
+
+		// 3. 写扩散 (Push 模式) - 将视频推送到粉丝的收件箱 (Inbox)
+		// 获取粉丝列表
+		followerResp, err := s.userClient.GetFollowerList(bgCtx, &userv1.GetFollowerListRequest{
+			UserId: video.AuthorID,
+		})
+		if err == nil && followerResp.Code == int32(errno.Success.Code) {
+			// 如果粉丝数量很大（大V），不进行全量推，让活跃粉丝拉取（Pull）
+			// 这里假设粉丝数小于 10000 走写扩散 (Push)
+			if len(followerResp.UserList) < 10000 {
+				for _, follower := range followerResp.UserList {
+					inboxKey := fmt.Sprintf("user:inbox:%d", follower.Id)
+					redis.RDB.ZAdd(bgCtx, inboxKey, &goredis.Z{
+						Score:  float64(now),
+						Member: videoIDStr,
+					})
+					// 限制收件箱大小
+					redis.RDB.ZRemRangeByRank(bgCtx, inboxKey, 0, -1001)
+				}
+			}
+		}
+
+		// 4. 发送 Kafka 消息用于异步抽帧
 		topic := config.Config.Kafka.VideoPublishTopic
 		if topic == "" {
 			topic = "video_publish_events"
 		}
-		err := kafka.SendMessageToTopic(bgCtx, topic, []byte(strconv.FormatInt(videoID, 10)), []byte(strconv.FormatInt(videoID, 10)))
+		err = kafka.SendMessageToTopic(bgCtx, topic, []byte(videoIDStr), []byte(videoIDStr))
 		if err != nil {
 			fmt.Printf("failed to send kafka message for video %d: %v\n", videoID, err)
 		}

@@ -32,6 +32,30 @@ func GetFeed(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
+func GetFollowFeed(c *gin.Context) {
+	userIDRaw, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "unauthorized"})
+		return
+	}
+	userID := userIDRaw.(int64)
+
+	lastTimeStr := c.DefaultQuery("last_time", "0")
+	lastTime, _ := strconv.ParseInt(lastTimeStr, 10, 64)
+
+	resp, err := rpc.GetClientManager().ContentClient.GetFollowFeed(c.Request.Context(), &contentv1.GetFollowFeedRequest{
+		UserId:   userID,
+		LastTime: lastTime,
+		Token:    bearerToken(c),
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
 // GetVideoUploadURL 获取预签名上传URL
 func GetVideoUploadURL(c *gin.Context) {
 	// 从 token 解析出的用户ID
