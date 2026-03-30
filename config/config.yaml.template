@@ -36,6 +36,8 @@ kafka:
   store_group_id: group_store
   video_publish_topic: video_publish_events
   video_group_id: group_video_worker
+  favorite_topic: video_favorite_events
+  favorite_group_id: group_favorite_worker
 
 media:
   ffmpeg_path: ffmpeg

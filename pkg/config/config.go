@@ -90,6 +90,8 @@ type KafkaConfig struct {
 	StoreGroupID      string   `mapstructure:"store_group_id"`
 	VideoPublishTopic string   `mapstructure:"video_publish_topic"`
 	VideoGroupID      string   `mapstructure:"video_group_id"`
+	FavoriteTopic     string   `mapstructure:"favorite_topic"`
+	FavoriteGroupID   string   `mapstructure:"favorite_group_id"`
 }
 
 type JWTConfig struct {

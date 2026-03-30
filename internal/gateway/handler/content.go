@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"strings"
 	contentv1 "ticktok-service/api/content/v1"
 	"ticktok-service/pkg/rpc"
 
@@ -46,7 +47,7 @@ func GetVideoUploadURL(c *gin.Context) {
 	resp, err := rpc.GetClientManager().ContentClient.GetVideoUploadURL(c.Request.Context(), &contentv1.GetVideoUploadURLRequest{
 		AuthorId: authorID,
 		Title:    title,
-		// Token 在 gRPC 侧暂未使用，可为空
+		Token:    bearerToken(c),
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
@@ -68,6 +69,7 @@ func PublishVideo(c *gin.Context) {
 
 	resp, err := rpc.GetClientManager().ContentClient.PublishVideo(c.Request.Context(), &contentv1.PublishVideoRequest{
 		VideoId: req.VideoID,
+		Token:   bearerToken(c),
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
@@ -88,6 +90,7 @@ func GetPublishList(c *gin.Context) {
 
 	resp, err := rpc.GetClientManager().ContentClient.GetPublishList(c.Request.Context(), &contentv1.GetPublishListRequest{
 		UserId: userID,
+		Token:  bearerToken(c),
 	})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
@@ -95,4 +98,79 @@ func GetPublishList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, resp)
+}
+
+func FavoriteAction(c *gin.Context) {
+	var req struct {
+		VideoID    int64 `json:"video_id" binding:"required"`
+		ActionType int32 `json:"action_type" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "invalid request body"})
+		return
+	}
+
+	resp, err := rpc.GetClientManager().ContentClient.FavoriteAction(c.Request.Context(), &contentv1.FavoriteActionRequest{
+		VideoId:    req.VideoID,
+		ActionType: req.ActionType,
+		Token:      bearerToken(c),
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func CommentAction(c *gin.Context) {
+	var req struct {
+		VideoID     int64  `json:"video_id" binding:"required"`
+		ActionType  int32  `json:"action_type" binding:"required"`
+		CommentText string `json:"comment_text"`
+		CommentID   int64  `json:"comment_id"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "invalid request body"})
+		return
+	}
+
+	resp, err := rpc.GetClientManager().ContentClient.CommentAction(c.Request.Context(), &contentv1.CommentActionRequest{
+		VideoId:     req.VideoID,
+		ActionType:  req.ActionType,
+		CommentText: req.CommentText,
+		CommentId:   req.CommentID,
+		Token:       bearerToken(c),
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func GetCommentList(c *gin.Context) {
+	videoIDStr := c.Query("video_id")
+	videoID, err := strconv.ParseInt(videoIDStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "invalid video_id"})
+		return
+	}
+
+	resp, err := rpc.GetClientManager().ContentClient.GetCommentList(c.Request.Context(), &contentv1.GetCommentListRequest{
+		VideoId: videoID,
+		Token:   bearerToken(c),
+	})
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, resp)
+}
+
+func bearerToken(c *gin.Context) string {
+	authHeader := c.GetHeader("Authorization")
+	if strings.HasPrefix(authHeader, "Bearer ") {
+		return strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
+	}
+	return ""
 }

@@ -57,5 +57,8 @@ var (
 	ErrPasswordIncorrect = NewErrNo(20002, "The password is incorrect.")
 
 	// Content errors
-	ErrVideoNotFound = NewErrNo(30001, "The video was not found.")
+	ErrVideoNotFound   = NewErrNo(30001, "The video was not found.")
+	ErrCommentNotFound = NewErrNo(30002, "The comment was not found.")
+	ErrInvalidAction   = NewErrNo(30003, "The action type is invalid.")
+	ErrUnauthorized    = NewErrNo(30004, "Unauthorized.")
 )

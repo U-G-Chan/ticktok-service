@@ -28,15 +28,18 @@ func main() {
 	redis.Init()
 	minio.Init()
 
-	repo := repository.NewVideoRepository(mysql.DB)
-	coverWorker := worker.NewCoverWorker(repo)
+	videoRepo := repository.NewVideoRepository(mysql.DB)
+	favoriteRepo := repository.NewFavoriteRepository(mysql.DB)
+	commentRepo := repository.NewCommentRepository(mysql.DB)
+	coverWorker := worker.NewCoverWorker(videoRepo)
+	interactionWorker := worker.NewInteractionWorker(videoRepo, favoriteRepo, commentRepo)
 
 	ctx, cancel := context.WithCancel(context.Background())
 
-	// Start the worker in a goroutine
 	go coverWorker.Start(ctx)
+	go interactionWorker.StartFavoriteConsumer(ctx)
+	go interactionWorker.StartStatsFlusher(ctx)
 
-	// Wait for interrupt signal to gracefully shutdown
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit

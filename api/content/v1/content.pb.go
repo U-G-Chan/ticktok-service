@@ -131,6 +131,74 @@ func (x *Video) GetRecommendScore() int32 {
 	return 0
 }
 
+type Comment struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	User          *v1.User               `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
+	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	CreateDate    string                 `protobuf:"bytes,4,opt,name=create_date,json=createDate,proto3" json:"create_date,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Comment) Reset() {
+	*x = Comment{}
+	mi := &file_content_v1_content_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Comment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Comment) ProtoMessage() {}
+
+func (x *Comment) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Comment.ProtoReflect.Descriptor instead.
+func (*Comment) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Comment) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Comment) GetUser() *v1.User {
+	if x != nil {
+		return x.User
+	}
+	return nil
+}
+
+func (x *Comment) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *Comment) GetCreateDate() string {
+	if x != nil {
+		return x.CreateDate
+	}
+	return ""
+}
+
 // Feed 接口
 type GetFeedRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -143,7 +211,7 @@ type GetFeedRequest struct {
 
 func (x *GetFeedRequest) Reset() {
 	*x = GetFeedRequest{}
-	mi := &file_content_v1_content_proto_msgTypes[1]
+	mi := &file_content_v1_content_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -155,7 +223,7 @@ func (x *GetFeedRequest) String() string {
 func (*GetFeedRequest) ProtoMessage() {}
 
 func (x *GetFeedRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[1]
+	mi := &file_content_v1_content_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -168,7 +236,7 @@ func (x *GetFeedRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFeedRequest.ProtoReflect.Descriptor instead.
 func (*GetFeedRequest) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{1}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *GetFeedRequest) GetLastScore() int32 {
@@ -205,7 +273,7 @@ type GetFeedResponse struct {
 
 func (x *GetFeedResponse) Reset() {
 	*x = GetFeedResponse{}
-	mi := &file_content_v1_content_proto_msgTypes[2]
+	mi := &file_content_v1_content_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -217,7 +285,7 @@ func (x *GetFeedResponse) String() string {
 func (*GetFeedResponse) ProtoMessage() {}
 
 func (x *GetFeedResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[2]
+	mi := &file_content_v1_content_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -230,7 +298,7 @@ func (x *GetFeedResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFeedResponse.ProtoReflect.Descriptor instead.
 func (*GetFeedResponse) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{2}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetFeedResponse) GetCode() int32 {
@@ -280,7 +348,7 @@ type GetVideoUploadURLRequest struct {
 
 func (x *GetVideoUploadURLRequest) Reset() {
 	*x = GetVideoUploadURLRequest{}
-	mi := &file_content_v1_content_proto_msgTypes[3]
+	mi := &file_content_v1_content_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -292,7 +360,7 @@ func (x *GetVideoUploadURLRequest) String() string {
 func (*GetVideoUploadURLRequest) ProtoMessage() {}
 
 func (x *GetVideoUploadURLRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[3]
+	mi := &file_content_v1_content_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -305,7 +373,7 @@ func (x *GetVideoUploadURLRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVideoUploadURLRequest.ProtoReflect.Descriptor instead.
 func (*GetVideoUploadURLRequest) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{3}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetVideoUploadURLRequest) GetAuthorId() int64 {
@@ -341,7 +409,7 @@ type GetVideoUploadURLResponse struct {
 
 func (x *GetVideoUploadURLResponse) Reset() {
 	*x = GetVideoUploadURLResponse{}
-	mi := &file_content_v1_content_proto_msgTypes[4]
+	mi := &file_content_v1_content_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -353,7 +421,7 @@ func (x *GetVideoUploadURLResponse) String() string {
 func (*GetVideoUploadURLResponse) ProtoMessage() {}
 
 func (x *GetVideoUploadURLResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[4]
+	mi := &file_content_v1_content_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -366,7 +434,7 @@ func (x *GetVideoUploadURLResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetVideoUploadURLResponse.ProtoReflect.Descriptor instead.
 func (*GetVideoUploadURLResponse) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{4}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetVideoUploadURLResponse) GetCode() int32 {
@@ -410,7 +478,7 @@ type PublishVideoRequest struct {
 
 func (x *PublishVideoRequest) Reset() {
 	*x = PublishVideoRequest{}
-	mi := &file_content_v1_content_proto_msgTypes[5]
+	mi := &file_content_v1_content_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -422,7 +490,7 @@ func (x *PublishVideoRequest) String() string {
 func (*PublishVideoRequest) ProtoMessage() {}
 
 func (x *PublishVideoRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[5]
+	mi := &file_content_v1_content_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -435,7 +503,7 @@ func (x *PublishVideoRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishVideoRequest.ProtoReflect.Descriptor instead.
 func (*PublishVideoRequest) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{5}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *PublishVideoRequest) GetVideoId() int64 {
@@ -476,7 +544,7 @@ type PublishVideoResponse struct {
 
 func (x *PublishVideoResponse) Reset() {
 	*x = PublishVideoResponse{}
-	mi := &file_content_v1_content_proto_msgTypes[6]
+	mi := &file_content_v1_content_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -488,7 +556,7 @@ func (x *PublishVideoResponse) String() string {
 func (*PublishVideoResponse) ProtoMessage() {}
 
 func (x *PublishVideoResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[6]
+	mi := &file_content_v1_content_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -501,7 +569,7 @@ func (x *PublishVideoResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PublishVideoResponse.ProtoReflect.Descriptor instead.
 func (*PublishVideoResponse) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{6}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *PublishVideoResponse) GetCode() int32 {
@@ -529,7 +597,7 @@ type GetPublishListRequest struct {
 
 func (x *GetPublishListRequest) Reset() {
 	*x = GetPublishListRequest{}
-	mi := &file_content_v1_content_proto_msgTypes[7]
+	mi := &file_content_v1_content_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -541,7 +609,7 @@ func (x *GetPublishListRequest) String() string {
 func (*GetPublishListRequest) ProtoMessage() {}
 
 func (x *GetPublishListRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[7]
+	mi := &file_content_v1_content_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -554,7 +622,7 @@ func (x *GetPublishListRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPublishListRequest.ProtoReflect.Descriptor instead.
 func (*GetPublishListRequest) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{7}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetPublishListRequest) GetUserId() int64 {
@@ -582,7 +650,7 @@ type GetPublishListResponse struct {
 
 func (x *GetPublishListResponse) Reset() {
 	*x = GetPublishListResponse{}
-	mi := &file_content_v1_content_proto_msgTypes[8]
+	mi := &file_content_v1_content_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -594,7 +662,7 @@ func (x *GetPublishListResponse) String() string {
 func (*GetPublishListResponse) ProtoMessage() {}
 
 func (x *GetPublishListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_content_v1_content_proto_msgTypes[8]
+	mi := &file_content_v1_content_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -607,7 +675,7 @@ func (x *GetPublishListResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPublishListResponse.ProtoReflect.Descriptor instead.
 func (*GetPublishListResponse) Descriptor() ([]byte, []int) {
-	return file_content_v1_content_proto_rawDescGZIP(), []int{8}
+	return file_content_v1_content_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *GetPublishListResponse) GetCode() int32 {
@@ -631,6 +699,366 @@ func (x *GetPublishListResponse) GetVideoList() []*Video {
 	return nil
 }
 
+type FavoriteActionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       int64                  `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	ActionType    int32                  `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"` // 1-like, 2-unlike
+	Token         string                 `protobuf:"bytes,3,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FavoriteActionRequest) Reset() {
+	*x = FavoriteActionRequest{}
+	mi := &file_content_v1_content_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FavoriteActionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteActionRequest) ProtoMessage() {}
+
+func (x *FavoriteActionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteActionRequest.ProtoReflect.Descriptor instead.
+func (*FavoriteActionRequest) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *FavoriteActionRequest) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+func (x *FavoriteActionRequest) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+func (x *FavoriteActionRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type FavoriteActionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FavoriteActionResponse) Reset() {
+	*x = FavoriteActionResponse{}
+	mi := &file_content_v1_content_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FavoriteActionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FavoriteActionResponse) ProtoMessage() {}
+
+func (x *FavoriteActionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FavoriteActionResponse.ProtoReflect.Descriptor instead.
+func (*FavoriteActionResponse) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *FavoriteActionResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *FavoriteActionResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type CommentActionRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       int64                  `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	ActionType    int32                  `protobuf:"varint,2,opt,name=action_type,json=actionType,proto3" json:"action_type,omitempty"` // 1-create, 2-delete
+	CommentText   string                 `protobuf:"bytes,3,opt,name=comment_text,json=commentText,proto3" json:"comment_text,omitempty"`
+	CommentId     int64                  `protobuf:"varint,4,opt,name=comment_id,json=commentId,proto3" json:"comment_id,omitempty"`
+	Token         string                 `protobuf:"bytes,5,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommentActionRequest) Reset() {
+	*x = CommentActionRequest{}
+	mi := &file_content_v1_content_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommentActionRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentActionRequest) ProtoMessage() {}
+
+func (x *CommentActionRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentActionRequest.ProtoReflect.Descriptor instead.
+func (*CommentActionRequest) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CommentActionRequest) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+func (x *CommentActionRequest) GetActionType() int32 {
+	if x != nil {
+		return x.ActionType
+	}
+	return 0
+}
+
+func (x *CommentActionRequest) GetCommentText() string {
+	if x != nil {
+		return x.CommentText
+	}
+	return ""
+}
+
+func (x *CommentActionRequest) GetCommentId() int64 {
+	if x != nil {
+		return x.CommentId
+	}
+	return 0
+}
+
+func (x *CommentActionRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type CommentActionResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	Comment       *Comment               `protobuf:"bytes,3,opt,name=comment,proto3" json:"comment,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommentActionResponse) Reset() {
+	*x = CommentActionResponse{}
+	mi := &file_content_v1_content_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommentActionResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommentActionResponse) ProtoMessage() {}
+
+func (x *CommentActionResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommentActionResponse.ProtoReflect.Descriptor instead.
+func (*CommentActionResponse) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CommentActionResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *CommentActionResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *CommentActionResponse) GetComment() *Comment {
+	if x != nil {
+		return x.Comment
+	}
+	return nil
+}
+
+type GetCommentListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VideoId       int64                  `protobuf:"varint,1,opt,name=video_id,json=videoId,proto3" json:"video_id,omitempty"`
+	Token         string                 `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCommentListRequest) Reset() {
+	*x = GetCommentListRequest{}
+	mi := &file_content_v1_content_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCommentListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCommentListRequest) ProtoMessage() {}
+
+func (x *GetCommentListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCommentListRequest.ProtoReflect.Descriptor instead.
+func (*GetCommentListRequest) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetCommentListRequest) GetVideoId() int64 {
+	if x != nil {
+		return x.VideoId
+	}
+	return 0
+}
+
+func (x *GetCommentListRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type GetCommentListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Code          int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
+	Msg           string                 `protobuf:"bytes,2,opt,name=msg,proto3" json:"msg,omitempty"`
+	CommentList   []*Comment             `protobuf:"bytes,3,rep,name=comment_list,json=commentList,proto3" json:"comment_list,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCommentListResponse) Reset() {
+	*x = GetCommentListResponse{}
+	mi := &file_content_v1_content_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCommentListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCommentListResponse) ProtoMessage() {}
+
+func (x *GetCommentListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_content_v1_content_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCommentListResponse.ProtoReflect.Descriptor instead.
+func (*GetCommentListResponse) Descriptor() ([]byte, []int) {
+	return file_content_v1_content_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GetCommentListResponse) GetCode() int32 {
+	if x != nil {
+		return x.Code
+	}
+	return 0
+}
+
+func (x *GetCommentListResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+func (x *GetCommentListResponse) GetCommentList() []*Comment {
+	if x != nil {
+		return x.CommentList
+	}
+	return nil
+}
+
 var File_content_v1_content_proto protoreflect.FileDescriptor
 
 const file_content_v1_content_proto_rawDesc = "" +
@@ -647,7 +1075,13 @@ const file_content_v1_content_proto_rawDesc = "" +
 	"\vis_favorite\x18\a \x01(\bR\n" +
 	"isFavorite\x12\x14\n" +
 	"\x05title\x18\b \x01(\tR\x05title\x12'\n" +
-	"\x0frecommend_score\x18\t \x01(\x05R\x0erecommendScore\"^\n" +
+	"\x0frecommend_score\x18\t \x01(\x05R\x0erecommendScore\"w\n" +
+	"\aComment\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12!\n" +
+	"\x04user\x18\x02 \x01(\v2\r.user.v1.UserR\x04user\x12\x18\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\x12\x1f\n" +
+	"\vcreate_date\x18\x04 \x01(\tR\n" +
+	"createDate\"^\n" +
 	"\x0eGetFeedRequest\x12\x1d\n" +
 	"\n" +
 	"last_score\x18\x01 \x01(\x05R\tlastScore\x12\x17\n" +
@@ -686,12 +1120,42 @@ const file_content_v1_content_proto_rawDesc = "" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x120\n" +
 	"\n" +
-	"video_list\x18\x03 \x03(\v2\x11.content.v1.VideoR\tvideoList2\xe2\x02\n" +
+	"video_list\x18\x03 \x03(\v2\x11.content.v1.VideoR\tvideoList\"i\n" +
+	"\x15FavoriteActionRequest\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\x03R\avideoId\x12\x1f\n" +
+	"\vaction_type\x18\x02 \x01(\x05R\n" +
+	"actionType\x12\x14\n" +
+	"\x05token\x18\x03 \x01(\tR\x05token\">\n" +
+	"\x16FavoriteActionResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\"\xaa\x01\n" +
+	"\x14CommentActionRequest\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\x03R\avideoId\x12\x1f\n" +
+	"\vaction_type\x18\x02 \x01(\x05R\n" +
+	"actionType\x12!\n" +
+	"\fcomment_text\x18\x03 \x01(\tR\vcommentText\x12\x1d\n" +
+	"\n" +
+	"comment_id\x18\x04 \x01(\x03R\tcommentId\x12\x14\n" +
+	"\x05token\x18\x05 \x01(\tR\x05token\"l\n" +
+	"\x15CommentActionResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\x12-\n" +
+	"\acomment\x18\x03 \x01(\v2\x13.content.v1.CommentR\acomment\"H\n" +
+	"\x15GetCommentListRequest\x12\x19\n" +
+	"\bvideo_id\x18\x01 \x01(\x03R\avideoId\x12\x14\n" +
+	"\x05token\x18\x02 \x01(\tR\x05token\"v\n" +
+	"\x16GetCommentListResponse\x12\x12\n" +
+	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
+	"\x03msg\x18\x02 \x01(\tR\x03msg\x126\n" +
+	"\fcomment_list\x18\x03 \x03(\v2\x13.content.v1.CommentR\vcommentList2\xea\x04\n" +
 	"\x0eContentService\x12B\n" +
 	"\aGetFeed\x12\x1a.content.v1.GetFeedRequest\x1a\x1b.content.v1.GetFeedResponse\x12`\n" +
 	"\x11GetVideoUploadURL\x12$.content.v1.GetVideoUploadURLRequest\x1a%.content.v1.GetVideoUploadURLResponse\x12Q\n" +
 	"\fPublishVideo\x12\x1f.content.v1.PublishVideoRequest\x1a .content.v1.PublishVideoResponse\x12W\n" +
-	"\x0eGetPublishList\x12!.content.v1.GetPublishListRequest\x1a\".content.v1.GetPublishListResponseB(Z&ticktok-service/api/content/v1;contentb\x06proto3"
+	"\x0eGetPublishList\x12!.content.v1.GetPublishListRequest\x1a\".content.v1.GetPublishListResponse\x12W\n" +
+	"\x0eFavoriteAction\x12!.content.v1.FavoriteActionRequest\x1a\".content.v1.FavoriteActionResponse\x12T\n" +
+	"\rCommentAction\x12 .content.v1.CommentActionRequest\x1a!.content.v1.CommentActionResponse\x12W\n" +
+	"\x0eGetCommentList\x12!.content.v1.GetCommentListRequest\x1a\".content.v1.GetCommentListResponseB(Z&ticktok-service/api/content/v1;contentb\x06proto3"
 
 var (
 	file_content_v1_content_proto_rawDescOnce sync.Once
@@ -705,36 +1169,52 @@ func file_content_v1_content_proto_rawDescGZIP() []byte {
 	return file_content_v1_content_proto_rawDescData
 }
 
-var file_content_v1_content_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_content_v1_content_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_content_v1_content_proto_goTypes = []any{
 	(*Video)(nil),                     // 0: content.v1.Video
-	(*GetFeedRequest)(nil),            // 1: content.v1.GetFeedRequest
-	(*GetFeedResponse)(nil),           // 2: content.v1.GetFeedResponse
-	(*GetVideoUploadURLRequest)(nil),  // 3: content.v1.GetVideoUploadURLRequest
-	(*GetVideoUploadURLResponse)(nil), // 4: content.v1.GetVideoUploadURLResponse
-	(*PublishVideoRequest)(nil),       // 5: content.v1.PublishVideoRequest
-	(*PublishVideoResponse)(nil),      // 6: content.v1.PublishVideoResponse
-	(*GetPublishListRequest)(nil),     // 7: content.v1.GetPublishListRequest
-	(*GetPublishListResponse)(nil),    // 8: content.v1.GetPublishListResponse
-	(*v1.User)(nil),                   // 9: user.v1.User
+	(*Comment)(nil),                   // 1: content.v1.Comment
+	(*GetFeedRequest)(nil),            // 2: content.v1.GetFeedRequest
+	(*GetFeedResponse)(nil),           // 3: content.v1.GetFeedResponse
+	(*GetVideoUploadURLRequest)(nil),  // 4: content.v1.GetVideoUploadURLRequest
+	(*GetVideoUploadURLResponse)(nil), // 5: content.v1.GetVideoUploadURLResponse
+	(*PublishVideoRequest)(nil),       // 6: content.v1.PublishVideoRequest
+	(*PublishVideoResponse)(nil),      // 7: content.v1.PublishVideoResponse
+	(*GetPublishListRequest)(nil),     // 8: content.v1.GetPublishListRequest
+	(*GetPublishListResponse)(nil),    // 9: content.v1.GetPublishListResponse
+	(*FavoriteActionRequest)(nil),     // 10: content.v1.FavoriteActionRequest
+	(*FavoriteActionResponse)(nil),    // 11: content.v1.FavoriteActionResponse
+	(*CommentActionRequest)(nil),      // 12: content.v1.CommentActionRequest
+	(*CommentActionResponse)(nil),     // 13: content.v1.CommentActionResponse
+	(*GetCommentListRequest)(nil),     // 14: content.v1.GetCommentListRequest
+	(*GetCommentListResponse)(nil),    // 15: content.v1.GetCommentListResponse
+	(*v1.User)(nil),                   // 16: user.v1.User
 }
 var file_content_v1_content_proto_depIdxs = []int32{
-	9, // 0: content.v1.Video.author:type_name -> user.v1.User
-	0, // 1: content.v1.GetFeedResponse.video_list:type_name -> content.v1.Video
-	0, // 2: content.v1.GetPublishListResponse.video_list:type_name -> content.v1.Video
-	1, // 3: content.v1.ContentService.GetFeed:input_type -> content.v1.GetFeedRequest
-	3, // 4: content.v1.ContentService.GetVideoUploadURL:input_type -> content.v1.GetVideoUploadURLRequest
-	5, // 5: content.v1.ContentService.PublishVideo:input_type -> content.v1.PublishVideoRequest
-	7, // 6: content.v1.ContentService.GetPublishList:input_type -> content.v1.GetPublishListRequest
-	2, // 7: content.v1.ContentService.GetFeed:output_type -> content.v1.GetFeedResponse
-	4, // 8: content.v1.ContentService.GetVideoUploadURL:output_type -> content.v1.GetVideoUploadURLResponse
-	6, // 9: content.v1.ContentService.PublishVideo:output_type -> content.v1.PublishVideoResponse
-	8, // 10: content.v1.ContentService.GetPublishList:output_type -> content.v1.GetPublishListResponse
-	7, // [7:11] is the sub-list for method output_type
-	3, // [3:7] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	16, // 0: content.v1.Video.author:type_name -> user.v1.User
+	16, // 1: content.v1.Comment.user:type_name -> user.v1.User
+	0,  // 2: content.v1.GetFeedResponse.video_list:type_name -> content.v1.Video
+	0,  // 3: content.v1.GetPublishListResponse.video_list:type_name -> content.v1.Video
+	1,  // 4: content.v1.CommentActionResponse.comment:type_name -> content.v1.Comment
+	1,  // 5: content.v1.GetCommentListResponse.comment_list:type_name -> content.v1.Comment
+	2,  // 6: content.v1.ContentService.GetFeed:input_type -> content.v1.GetFeedRequest
+	4,  // 7: content.v1.ContentService.GetVideoUploadURL:input_type -> content.v1.GetVideoUploadURLRequest
+	6,  // 8: content.v1.ContentService.PublishVideo:input_type -> content.v1.PublishVideoRequest
+	8,  // 9: content.v1.ContentService.GetPublishList:input_type -> content.v1.GetPublishListRequest
+	10, // 10: content.v1.ContentService.FavoriteAction:input_type -> content.v1.FavoriteActionRequest
+	12, // 11: content.v1.ContentService.CommentAction:input_type -> content.v1.CommentActionRequest
+	14, // 12: content.v1.ContentService.GetCommentList:input_type -> content.v1.GetCommentListRequest
+	3,  // 13: content.v1.ContentService.GetFeed:output_type -> content.v1.GetFeedResponse
+	5,  // 14: content.v1.ContentService.GetVideoUploadURL:output_type -> content.v1.GetVideoUploadURLResponse
+	7,  // 15: content.v1.ContentService.PublishVideo:output_type -> content.v1.PublishVideoResponse
+	9,  // 16: content.v1.ContentService.GetPublishList:output_type -> content.v1.GetPublishListResponse
+	11, // 17: content.v1.ContentService.FavoriteAction:output_type -> content.v1.FavoriteActionResponse
+	13, // 18: content.v1.ContentService.CommentAction:output_type -> content.v1.CommentActionResponse
+	15, // 19: content.v1.ContentService.GetCommentList:output_type -> content.v1.GetCommentListResponse
+	13, // [13:20] is the sub-list for method output_type
+	6,  // [6:13] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_content_v1_content_proto_init() }
@@ -748,7 +1228,7 @@ func file_content_v1_content_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_content_v1_content_proto_rawDesc), len(file_content_v1_content_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

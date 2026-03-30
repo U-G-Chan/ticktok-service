@@ -47,6 +47,17 @@ func NewRouter() *gin.Engine {
 			publishGroup.GET("/list", handler.GetPublishList)          // 获取发布列表
 		}
 
+		favoriteGroup := api.Group("/favorite")
+		{
+			favoriteGroup.POST("/action", handler.FavoriteAction)
+		}
+
+		commentGroup := api.Group("/comment")
+		{
+			commentGroup.POST("/action", handler.CommentAction)
+			commentGroup.GET("/list", handler.GetCommentList)
+		}
+
 		// Chatbot routes
 		chat := api.Group("/chat")
 		{

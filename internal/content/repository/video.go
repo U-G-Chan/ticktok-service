@@ -10,6 +10,7 @@ import (
 type VideoRepository interface {
 	Create(ctx context.Context, video *model.Video) error
 	Update(ctx context.Context, video *model.Video) error
+	UpdateInteractionCounts(ctx context.Context, videoID int64, favoriteCount, commentCount int64) error
 	GetByID(ctx context.Context, id int64) (*model.Video, error)
 	GetByIDs(ctx context.Context, ids []int64) ([]*model.Video, error)
 	GetFeed(ctx context.Context, lastScore int32, lastID int64, limit int) ([]*model.Video, error)
@@ -30,6 +31,16 @@ func (r *videoRepository) Create(ctx context.Context, video *model.Video) error 
 
 func (r *videoRepository) Update(ctx context.Context, video *model.Video) error {
 	return r.db.WithContext(ctx).Save(video).Error
+}
+
+func (r *videoRepository) UpdateInteractionCounts(ctx context.Context, videoID int64, favoriteCount, commentCount int64) error {
+	return r.db.WithContext(ctx).
+		Model(&model.Video{}).
+		Where("id = ?", videoID).
+		Updates(map[string]interface{}{
+			"favorite_count": favoriteCount,
+			"comment_count":  commentCount,
+		}).Error
 }
 
 func (r *videoRepository) GetByID(ctx context.Context, id int64) (*model.Video, error) {

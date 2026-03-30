@@ -55,9 +55,11 @@ func main() {
 	s := grpc.NewServer()
 
 	// 依赖注入并注册服务
-	repo := repository.NewVideoRepository(mysql.DB)
+	videoRepo := repository.NewVideoRepository(mysql.DB)
+	favoriteRepo := repository.NewFavoriteRepository(mysql.DB)
+	commentRepo := repository.NewCommentRepository(mysql.DB)
 	userClient := rpc.GetClientManager().UserClient
-	svc := service.NewContentService(repo, userClient)
+	svc := service.NewContentService(videoRepo, favoriteRepo, commentRepo, userClient)
 	h := handler.NewContentHandler(svc)
 	contentv1.RegisterContentServiceServer(s, h)
 
@@ -66,5 +68,4 @@ func main() {
 		logger.Log.Fatal("failed to serve: " + err.Error())
 	}
 }
-
 

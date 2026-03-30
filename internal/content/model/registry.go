@@ -5,6 +5,8 @@ import "gorm.io/gorm"
 func getAllModels() []interface{} {
 	return []interface{}{
 		&Video{},
+		&VideoFavorite{},
+		&VideoComment{},
 	}
 }
 

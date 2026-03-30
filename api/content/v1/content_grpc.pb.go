@@ -23,6 +23,9 @@ const (
 	ContentService_GetVideoUploadURL_FullMethodName = "/content.v1.ContentService/GetVideoUploadURL"
 	ContentService_PublishVideo_FullMethodName      = "/content.v1.ContentService/PublishVideo"
 	ContentService_GetPublishList_FullMethodName    = "/content.v1.ContentService/GetPublishList"
+	ContentService_FavoriteAction_FullMethodName    = "/content.v1.ContentService/FavoriteAction"
+	ContentService_CommentAction_FullMethodName     = "/content.v1.ContentService/CommentAction"
+	ContentService_GetCommentList_FullMethodName    = "/content.v1.ContentService/GetCommentList"
 )
 
 // ContentServiceClient is the client API for ContentService service.
@@ -38,6 +41,10 @@ type ContentServiceClient interface {
 	PublishVideo(ctx context.Context, in *PublishVideoRequest, opts ...grpc.CallOption) (*PublishVideoResponse, error)
 	// --- 获取发布列表 ---
 	GetPublishList(ctx context.Context, in *GetPublishListRequest, opts ...grpc.CallOption) (*GetPublishListResponse, error)
+	// --- 高频互动 ---
+	FavoriteAction(ctx context.Context, in *FavoriteActionRequest, opts ...grpc.CallOption) (*FavoriteActionResponse, error)
+	CommentAction(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error)
+	GetCommentList(ctx context.Context, in *GetCommentListRequest, opts ...grpc.CallOption) (*GetCommentListResponse, error)
 }
 
 type contentServiceClient struct {
@@ -88,6 +95,36 @@ func (c *contentServiceClient) GetPublishList(ctx context.Context, in *GetPublis
 	return out, nil
 }
 
+func (c *contentServiceClient) FavoriteAction(ctx context.Context, in *FavoriteActionRequest, opts ...grpc.CallOption) (*FavoriteActionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FavoriteActionResponse)
+	err := c.cc.Invoke(ctx, ContentService_FavoriteAction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) CommentAction(ctx context.Context, in *CommentActionRequest, opts ...grpc.CallOption) (*CommentActionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CommentActionResponse)
+	err := c.cc.Invoke(ctx, ContentService_CommentAction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *contentServiceClient) GetCommentList(ctx context.Context, in *GetCommentListRequest, opts ...grpc.CallOption) (*GetCommentListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCommentListResponse)
+	err := c.cc.Invoke(ctx, ContentService_GetCommentList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ContentServiceServer is the server API for ContentService service.
 // All implementations must embed UnimplementedContentServiceServer
 // for forward compatibility.
@@ -101,6 +138,10 @@ type ContentServiceServer interface {
 	PublishVideo(context.Context, *PublishVideoRequest) (*PublishVideoResponse, error)
 	// --- 获取发布列表 ---
 	GetPublishList(context.Context, *GetPublishListRequest) (*GetPublishListResponse, error)
+	// --- 高频互动 ---
+	FavoriteAction(context.Context, *FavoriteActionRequest) (*FavoriteActionResponse, error)
+	CommentAction(context.Context, *CommentActionRequest) (*CommentActionResponse, error)
+	GetCommentList(context.Context, *GetCommentListRequest) (*GetCommentListResponse, error)
 	mustEmbedUnimplementedContentServiceServer()
 }
 
@@ -122,6 +163,15 @@ func (UnimplementedContentServiceServer) PublishVideo(context.Context, *PublishV
 }
 func (UnimplementedContentServiceServer) GetPublishList(context.Context, *GetPublishListRequest) (*GetPublishListResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetPublishList not implemented")
+}
+func (UnimplementedContentServiceServer) FavoriteAction(context.Context, *FavoriteActionRequest) (*FavoriteActionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method FavoriteAction not implemented")
+}
+func (UnimplementedContentServiceServer) CommentAction(context.Context, *CommentActionRequest) (*CommentActionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CommentAction not implemented")
+}
+func (UnimplementedContentServiceServer) GetCommentList(context.Context, *GetCommentListRequest) (*GetCommentListResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetCommentList not implemented")
 }
 func (UnimplementedContentServiceServer) mustEmbedUnimplementedContentServiceServer() {}
 func (UnimplementedContentServiceServer) testEmbeddedByValue()                        {}
@@ -216,6 +266,60 @@ func _ContentService_GetPublishList_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ContentService_FavoriteAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FavoriteActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).FavoriteAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_FavoriteAction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).FavoriteAction(ctx, req.(*FavoriteActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_CommentAction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommentActionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).CommentAction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_CommentAction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).CommentAction(ctx, req.(*CommentActionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ContentService_GetCommentList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommentListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ContentServiceServer).GetCommentList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ContentService_GetCommentList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ContentServiceServer).GetCommentList(ctx, req.(*GetCommentListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ContentService_ServiceDesc is the grpc.ServiceDesc for ContentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -238,6 +342,18 @@ var ContentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPublishList",
 			Handler:    _ContentService_GetPublishList_Handler,
+		},
+		{
+			MethodName: "FavoriteAction",
+			Handler:    _ContentService_FavoriteAction_Handler,
+		},
+		{
+			MethodName: "CommentAction",
+			Handler:    _ContentService_CommentAction_Handler,
+		},
+		{
+			MethodName: "GetCommentList",
+			Handler:    _ContentService_GetCommentList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

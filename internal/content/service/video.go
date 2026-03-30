@@ -10,6 +10,7 @@ import (
 	userv1 "ticktok-service/api/user/v1"
 	"ticktok-service/internal/content/model"
 	"ticktok-service/internal/content/repository"
+	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/errno"
 	"ticktok-service/pkg/kafka"
 	"ticktok-service/pkg/minio"
@@ -22,29 +23,42 @@ import (
 const feedKey = "feed:recommend_score"
 
 type ContentService interface {
-	GetFeed(ctx context.Context, lastScore int32, lastID int64) ([]*contentv1.Video, int32, int64, error)
+	GetFeed(ctx context.Context, lastScore int32, lastID int64, token string) ([]*contentv1.Video, int32, int64, error)
 	GetVideoUploadURL(ctx context.Context, authorID int64, title string) (string, int64, error)
 	PublishVideo(ctx context.Context, videoID int64) error
-	GetPublishList(ctx context.Context, userID int64) ([]*contentv1.Video, error)
+	GetPublishList(ctx context.Context, userID int64, token string) ([]*contentv1.Video, error)
+	FavoriteAction(ctx context.Context, userID, videoID int64, actionType int32) error
+	CommentAction(ctx context.Context, userID, videoID int64, actionType int32, commentText string, commentID int64) (*contentv1.Comment, error)
+	GetCommentList(ctx context.Context, videoID int64) ([]*contentv1.Comment, error)
 }
 
 type contentService struct {
-	repo       repository.VideoRepository
-	userClient userv1.UserServiceClient
+	repo        repository.VideoRepository
+	favoriteRepo repository.FavoriteRepository
+	commentRepo repository.CommentRepository
+	userClient  userv1.UserServiceClient
 }
 
-func NewContentService(repo repository.VideoRepository, userClient userv1.UserServiceClient) ContentService {
+func NewContentService(
+	repo repository.VideoRepository,
+	favoriteRepo repository.FavoriteRepository,
+	commentRepo repository.CommentRepository,
+	userClient userv1.UserServiceClient,
+) ContentService {
 	return &contentService{
-		repo:       repo,
-		userClient: userClient,
+		repo:        repo,
+		favoriteRepo: favoriteRepo,
+		commentRepo: commentRepo,
+		userClient:  userClient,
 	}
 }
 
-func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID int64) ([]*contentv1.Video, int32, int64, error) {
+func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID int64, token string) ([]*contentv1.Video, int32, int64, error) {
 	limit := 30
 	var videos []*model.Video
 	var err error
 	var cacheHit bool
+	viewerID := parseUserIDFromToken(token)
 
 	// 1. Try to get Feed from Redis ZSet
 	startRank := int64(0)
@@ -124,25 +138,17 @@ func (s *contentService) GetFeed(ctx context.Context, lastScore int32, lastID in
 	var nextID int64
 
 	for i, v := range videos {
-		// 3. Match author info
 		author, ok := authorMap[v.AuthorID]
 		if !ok {
-			// Fallback
 			author = &userv1.User{Id: v.AuthorID}
 		}
 
-		pbVideos = append(pbVideos, &contentv1.Video{
-			Id:             v.ID,
-			Author:         author,
-			PlayUrl:        v.PlayURL,
-			CoverUrl:       v.CoverURL,
-			FavoriteCount:  v.FavoriteCount,
-			CommentCount:   v.CommentCount,
-			Title:          v.Title,
-			RecommendScore: v.RecommendScore,
-		})
+		pbVideo, buildErr := s.buildPBVideo(ctx, v, author, viewerID)
+		if buildErr != nil {
+			return nil, 0, 0, buildErr
+		}
+		pbVideos = append(pbVideos, pbVideo)
 
-		// 记录最后一条作为下一页游标
 		if i == len(videos)-1 {
 			nextScore = v.RecommendScore
 			nextID = v.ID
@@ -206,9 +212,11 @@ func (s *contentService) PublishVideo(ctx context.Context, videoID int64) error 
 		// 限制 ZSet 大小，例如只保留最新/最热的 5000 条，防止 BigKey
 		redis.RDB.ZRemRangeByRank(bgCtx, feedKey, 0, -5001)
 
-		// 发送 Kafka 消息，通知 worker 截取封面
-		// 消息的 value 就是 videoID 的字符串形式
-		err := kafka.SendMessageToTopic(bgCtx, "video_publish_events", []byte(strconv.FormatInt(videoID, 10)), []byte(strconv.FormatInt(videoID, 10)))
+		topic := config.Config.Kafka.VideoPublishTopic
+		if topic == "" {
+			topic = "video_publish_events"
+		}
+		err := kafka.SendMessageToTopic(bgCtx, topic, []byte(strconv.FormatInt(videoID, 10)), []byte(strconv.FormatInt(videoID, 10)))
 		if err != nil {
 			fmt.Printf("failed to send kafka message for video %d: %v\n", videoID, err)
 		}
@@ -217,7 +225,7 @@ func (s *contentService) PublishVideo(ctx context.Context, videoID int64) error 
 	return nil
 }
 
-func (s *contentService) GetPublishList(ctx context.Context, userID int64) ([]*contentv1.Video, error) {
+func (s *contentService) GetPublishList(ctx context.Context, userID int64, token string) ([]*contentv1.Video, error) {
 	videos, err := s.repo.GetByAuthorID(ctx, userID)
 	if err != nil {
 		return nil, err
@@ -233,22 +241,17 @@ func (s *contentService) GetPublishList(ctx context.Context, userID int64) ([]*c
 	if err == nil && userInfoResp.Code == int32(errno.Success.Code) {
 		author = userInfoResp.User
 	} else {
-		// Fallback
 		author = &userv1.User{Id: userID}
 	}
 
+	viewerID := parseUserIDFromToken(token)
 	var pbVideos []*contentv1.Video
 	for _, v := range videos {
-		pbVideos = append(pbVideos, &contentv1.Video{
-			Id:             v.ID,
-			Author:         author,
-			PlayUrl:        v.PlayURL,
-			CoverUrl:       v.CoverURL,
-			FavoriteCount:  v.FavoriteCount,
-			CommentCount:   v.CommentCount,
-			Title:          v.Title,
-			RecommendScore: v.RecommendScore,
-		})
+		pbVideo, buildErr := s.buildPBVideo(ctx, v, author, viewerID)
+		if buildErr != nil {
+			return nil, buildErr
+		}
+		pbVideos = append(pbVideos, pbVideo)
 	}
 	return pbVideos, nil
 }
