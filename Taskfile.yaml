@@ -41,6 +41,11 @@ tasks:
     cmds:
       - go run cmd/content/main.go
 
+  run-worker:
+    desc: Run media worker service (FFmpeg required locally if not using Docker)
+    cmds:
+      - go run cmd/worker/main.go
+
   run-message:
     desc: Run message service
     cmds:

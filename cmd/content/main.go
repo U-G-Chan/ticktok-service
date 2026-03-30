@@ -10,9 +10,11 @@ import (
 	"ticktok-service/internal/content/repository"
 	"ticktok-service/internal/content/service"
 	"ticktok-service/pkg/config"
+	"ticktok-service/pkg/kafka"
 	"ticktok-service/pkg/logger"
 	"ticktok-service/pkg/minio"
 	"ticktok-service/pkg/mysql"
+	"ticktok-service/pkg/redis"
 	"ticktok-service/pkg/rpc"
 
 	"google.golang.org/grpc"
@@ -24,16 +26,17 @@ func main() {
 	}
 	logger.Init(config.Config.LogLevel)
 
-	// 初始化 MySQL
+	// 初始化资源
 	mysql.Init()
+	redis.Init()
+	minio.Init()
+	kafka.InitProducer()
+
 	// 自动迁移建表
 	if err := model.AutoMigrate(mysql.DB); err != nil {
 		logger.Log.Fatal("AutoMigrate failed: " + err.Error())
 	}
 	logger.Log.Info("Database AutoMigrate successfully")
-
-	// 初始化 MinIO
-	minio.Init()
 
 	// 初始化 gRPC 客户端 (连接 User 服务)
 	_, err := rpc.InitClientManager(map[string]string{

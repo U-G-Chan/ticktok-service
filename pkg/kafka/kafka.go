@@ -16,7 +16,6 @@ var (
 func InitProducer() {
 	Producer = &kafka.Writer{
 		Addr:     kafka.TCP(config.Config.Kafka.Brokers...),
-		Topic:    config.Config.Kafka.ChatTopic,
 		Balancer: &kafka.Hash{},
 	}
 }
@@ -29,24 +28,35 @@ func CloseProducer() error {
 	return nil
 }
 
-// SendMessage sends a message to the default chat topic
+// SendMessage sends a message to the default chat topic (backward compatibility)
 func SendMessage(ctx context.Context, key, value []byte) error {
+	return SendMessageToTopic(ctx, config.Config.Kafka.ChatTopic, key, value)
+}
+
+// SendMessageToTopic sends a message to a specific topic
+func SendMessageToTopic(ctx context.Context, topic string, key, value []byte) error {
 	if Producer == nil {
 		return fmt.Errorf("kafka producer not initialized")
 	}
 	err := Producer.WriteMessages(ctx, kafka.Message{
+		Topic: topic,
 		Key:   key,
 		Value: value,
 	})
 	return err
 }
 
-// NewConsumer creates a new Kafka reader (consumer)
+// NewConsumer creates a new Kafka reader (consumer) for chat topic (backward compatibility)
 func NewConsumer(groupID string) *kafka.Reader {
+	return NewConsumerForTopic(config.Config.Kafka.ChatTopic, groupID)
+}
+
+// NewConsumerForTopic creates a new Kafka reader for a specific topic
+func NewConsumerForTopic(topic, groupID string) *kafka.Reader {
 	return kafka.NewReader(kafka.ReaderConfig{
 		Brokers:  config.Config.Kafka.Brokers,
 		GroupID:  groupID,
-		Topic:    config.Config.Kafka.ChatTopic,
+		Topic:    topic,
 		MinBytes: 10e3, // 10KB
 		MaxBytes: 10e6, // 10MB
 	})

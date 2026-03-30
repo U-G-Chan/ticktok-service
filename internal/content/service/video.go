@@ -11,6 +11,7 @@ import (
 	"ticktok-service/internal/content/model"
 	"ticktok-service/internal/content/repository"
 	"ticktok-service/pkg/errno"
+	"ticktok-service/pkg/kafka"
 	"ticktok-service/pkg/minio"
 	"ticktok-service/pkg/redis"
 	"ticktok-service/pkg/snowflake"
@@ -195,7 +196,7 @@ func (s *contentService) PublishVideo(ctx context.Context, videoID int64) error 
 		return err
 	}
 
-	// 异步更新 Redis Feed 流缓存
+	// 异步更新 Redis Feed 流缓存和发送 Kafka 消息用于抽帧
 	go func() {
 		bgCtx := context.Background()
 		redis.RDB.ZAdd(bgCtx, feedKey, &goredis.Z{
@@ -204,6 +205,13 @@ func (s *contentService) PublishVideo(ctx context.Context, videoID int64) error 
 		})
 		// 限制 ZSet 大小，例如只保留最新/最热的 5000 条，防止 BigKey
 		redis.RDB.ZRemRangeByRank(bgCtx, feedKey, 0, -5001)
+
+		// 发送 Kafka 消息，通知 worker 截取封面
+		// 消息的 value 就是 videoID 的字符串形式
+		err := kafka.SendMessageToTopic(bgCtx, "video_publish_events", []byte(strconv.FormatInt(videoID, 10)), []byte(strconv.FormatInt(videoID, 10)))
+		if err != nil {
+			fmt.Printf("failed to send kafka message for video %d: %v\n", videoID, err)
+		}
 	}()
 
 	return nil

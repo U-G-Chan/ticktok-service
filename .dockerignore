@@ -1,0 +1,7 @@
+data/
+bin/
+*.exe
+.air/
+.idea/
+.vscode/
+.env

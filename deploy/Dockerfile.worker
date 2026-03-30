@@ -1,0 +1,26 @@
+FROM golang:1.24-alpine AS builder
+
+WORKDIR /app
+
+# Install FFmpeg and tzdata in the builder to copy them, or just install in the final stage.
+# Actually, the final stage needs FFmpeg.
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+# Build the worker
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o media-worker ./cmd/worker/main.go
+
+FROM alpine:latest
+
+WORKDIR /app
+
+# Install FFmpeg in the final image
+RUN apk update && apk add --no-cache ffmpeg tzdata ca-certificates
+
+COPY --from=builder /app/media-worker .
+# Ensure config directory exists
+COPY --from=builder /app/config ./config
+
+CMD ["./media-worker"]

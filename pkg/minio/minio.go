@@ -63,3 +63,18 @@ func GetObjectURL(objectName string) string {
 	// 返回格式：http://endpoint/bucketName/objectName
 	return protocol + config.Config.MinIO.Endpoint + "/" + config.Config.MinIO.BucketName + "/" + objectName
 }
+
+// UploadLocalFile uploads a local file to MinIO
+func UploadLocalFile(ctx context.Context, objectName string, filePath string, contentType string) (string, error) {
+	_, err := Client.FPutObject(ctx, config.Config.MinIO.BucketName, objectName, filePath, minio.PutObjectOptions{
+		ContentType: contentType,
+	})
+	if err != nil {
+		return "", err
+	}
+	return GetObjectURL(objectName), nil
+}
+
+func DownloadToLocalFile(ctx context.Context, objectName string, filePath string) error {
+	return Client.FGetObject(ctx, config.Config.MinIO.BucketName, objectName, filePath, minio.GetObjectOptions{})
+}

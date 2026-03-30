@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -22,8 +23,13 @@ type Configuration struct {
 	JWT            JWTConfig           `mapstructure:"jwt"`
 	Microservices  MicroservicesConfig `mapstructure:"microservices"`
 	Kafka          KafkaConfig         `mapstructure:"kafka"`
+	Media          MediaConfig         `mapstructure:"media"`
 	LogLevel       string              `mapstructure:"log_level"`
 	LLM            LLMConfig           `mapstructure:"llm"`
+}
+
+type MediaConfig struct {
+	FfmpegPath string `mapstructure:"ffmpeg_path"`
 }
 
 type LLMConfig struct {
@@ -78,10 +84,12 @@ type EtcdConfig struct {
 }
 
 type KafkaConfig struct {
-	Brokers      []string `mapstructure:"brokers"`
-	ChatTopic    string   `mapstructure:"chat_topic"`
-	PushGroupID  string   `mapstructure:"push_group_id"`
-	StoreGroupID string   `mapstructure:"store_group_id"`
+	Brokers           []string `mapstructure:"brokers"`
+	ChatTopic         string   `mapstructure:"chat_topic"`
+	PushGroupID       string   `mapstructure:"push_group_id"`
+	StoreGroupID      string   `mapstructure:"store_group_id"`
+	VideoPublishTopic string   `mapstructure:"video_publish_topic"`
+	VideoGroupID      string   `mapstructure:"video_group_id"`
 }
 
 type JWTConfig struct {
@@ -105,6 +113,14 @@ func Init(configPath string) error {
 
 	if err := viper.Unmarshal(&Config); err != nil {
 		return fmt.Errorf("failed to unmarshal config: %w", err)
+	}
+
+	if brokers := os.Getenv("TICKTOK_KAFKA_BROKERS"); brokers != "" {
+		Config.Kafka.Brokers = strings.Split(brokers, ",")
+	}
+
+	if endpoints := os.Getenv("TICKTOK_ETCD_ENDPOINTS"); endpoints != "" {
+		Config.Etcd.Endpoints = strings.Split(endpoints, ",")
 	}
 
 	return nil
