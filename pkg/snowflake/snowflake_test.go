@@ -5,7 +5,7 @@ import (
 )
 
 func TestSnowflake(t *testing.T) {
-	InitSnowflake(1)
+	Init()
 	id1 := GenerateMsgID()
 	id2 := GenerateMsgID()
 

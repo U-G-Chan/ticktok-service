@@ -9,6 +9,7 @@ import (
 	"ticktok-service/pkg/config"
 	"ticktok-service/pkg/logger"
 	"ticktok-service/pkg/mysql"
+	"ticktok-service/pkg/snowflake"
 
 	"google.golang.org/grpc"
 )
@@ -18,6 +19,7 @@ func main() {
 		log.Fatalf("Init config failed: %v", err)
 	}
 	logger.Init(config.Config.LogLevel)
+	snowflake.Init()
 	mysql.Init()
 
 	if err := model.AutoMigrate(mysql.DB); err != nil {

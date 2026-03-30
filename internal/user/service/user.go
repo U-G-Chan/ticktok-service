@@ -7,6 +7,7 @@ import (
 	"ticktok-service/internal/user/repository"
 	"ticktok-service/pkg/errno"
 	"ticktok-service/pkg/mysql"
+	"ticktok-service/pkg/snowflake"
 	"ticktok-service/pkg/util"
 )
 
@@ -47,6 +48,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (
 	}
 
 	newUser := &model.User{
+		ID:       snowflake.GenerateMsgID(),
 		Username: req.Username,
 		Password: hashedPassword,
 		Role:     "user",
@@ -111,7 +113,7 @@ func (s *UserService) Login(ctx context.Context, req *user.LoginRequest) (*user.
 }
 
 func (s *UserService) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequest) (*user.GetUserInfoResponse, error) {
-	u, err := s.userRepo.FindByID(uint(req.UserId))
+	u, err := s.userRepo.FindByID(req.UserId)
 	if err != nil {
 		return &user.GetUserInfoResponse{
 			Code: int32(errno.ErrUserNotFound.Code),

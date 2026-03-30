@@ -24,7 +24,7 @@ func (r *BaseRepo[T]) Delete(entity *T) error {
 	return r.DB.Delete(entity).Error
 }
 
-func (r *BaseRepo[T]) FindByID(id uint) (*T, error) {
+func (r *BaseRepo[T]) FindByID(id int64) (*T, error) {
 	var entity T
 	err := r.DB.First(&entity, id).Error
 	return &entity, err

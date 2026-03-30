@@ -16,6 +16,7 @@ import (
 	"ticktok-service/pkg/mysql"
 	"ticktok-service/pkg/redis"
 	"ticktok-service/pkg/rpc"
+	"ticktok-service/pkg/snowflake"
 
 	"google.golang.org/grpc"
 )
@@ -27,6 +28,7 @@ func main() {
 	logger.Init(config.Config.LogLevel)
 
 	// 初始化资源
+	snowflake.Init()
 	mysql.Init()
 	redis.Init()
 	minio.Init()

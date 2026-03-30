@@ -26,6 +26,11 @@ type Configuration struct {
 	Media          MediaConfig         `mapstructure:"media"`
 	LogLevel       string              `mapstructure:"log_level"`
 	LLM            LLMConfig           `mapstructure:"llm"`
+	Snowflake      SnowflakeConfig     `mapstructure:"snowflake"`
+}
+
+type SnowflakeConfig struct {
+	NodeID int64 `mapstructure:"node_id"`
 }
 
 type MediaConfig struct {

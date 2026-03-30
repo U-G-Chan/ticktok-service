@@ -3,24 +3,33 @@ package snowflake
 import (
 	"log"
 
+	"ticktok-service/pkg/config"
+
 	"github.com/bwmarrin/snowflake"
 )
 
 var node *snowflake.Node
 
-// InitSnowflake initializes the snowflake node with a specific node number
-func InitSnowflake(nodeNumber int64) {
+// Init initializes the snowflake node with the node ID from config
+func Init() {
 	var err error
-	node, err = snowflake.NewNode(nodeNumber)
-	if err != nil {
-		log.Fatalf("Failed to initialize snowflake: %v", err)
+	nodeID := int64(1) // default fallback
+	
+	if config.Config != nil && config.Config.Snowflake.NodeID != 0 {
+		nodeID = config.Config.Snowflake.NodeID
 	}
+
+	node, err = snowflake.NewNode(nodeID)
+	if err != nil {
+		log.Fatalf("Failed to initialize snowflake with node ID %d: %v", nodeID, err)
+	}
+	log.Printf("Snowflake initialized successfully with node ID: %d", nodeID)
 }
 
 // GenerateMsgID generates a unique ID
 func GenerateMsgID() int64 {
 	if node == nil {
-		InitSnowflake(1)
+		Init()
 	}
 	return node.Generate().Int64()
 }

@@ -41,7 +41,7 @@ func main() {
 	}
 
 	// 4. Initialize Snowflake
-	snowflake.InitSnowflake(1) // For distributed environment, this should be a unique node ID
+	snowflake.Init()
 
 	// 5. Start Workers
 	ctx := context.Background()

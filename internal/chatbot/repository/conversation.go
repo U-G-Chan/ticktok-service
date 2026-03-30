@@ -3,6 +3,7 @@ package repository
 import (
 	"ticktok-service/internal/chatbot/model"
 	"ticktok-service/pkg/common"
+	"ticktok-service/pkg/snowflake"
 
 	"gorm.io/gorm"
 )
@@ -19,6 +20,7 @@ func NewConversationRepo(db *gorm.DB) *ConversationRepo {
 
 func (r *ConversationRepo) CreateConversation(sessionID string, userID int64, title string) error {
 	return r.Create(&model.Conversation{
+		ID:        snowflake.GenerateMsgID(),
 		SessionID: sessionID,
 		UserID:    userID,
 		Title:     title,

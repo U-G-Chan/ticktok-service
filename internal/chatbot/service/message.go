@@ -4,25 +4,17 @@ import (
 	"context"
 	"ticktok-service/internal/chatbot/model"
 	"ticktok-service/internal/chatbot/repository"
-	"ticktok-service/pkg/logger"
 	"ticktok-service/pkg/mysql"
-
-	"github.com/bwmarrin/snowflake"
+	"ticktok-service/pkg/snowflake"
 )
 
 type MessageService struct {
 	messageRepo *repository.MessageRepo
-	snowflake   *snowflake.Node
 }
 
 func NewMessageService() *MessageService {
-	node, err := snowflake.NewNode(1)
-	if err != nil {
-		logger.Log.Fatal("failed to initialize snowflake node: " + err.Error())
-	}
 	return &MessageService{
 		messageRepo: repository.NewMessageRepo(mysql.DB),
-		snowflake:   node,
 	}
 }
 
@@ -33,8 +25,9 @@ func (s *MessageService) GetChatHistory(ctx context.Context, sessionID string) (
 
 // AddMessage adds a new message to the database
 func (s *MessageService) AddMessage(ctx context.Context, sessionID string, role string, content string) error {
-	msgID := s.snowflake.Generate().Int64()
+	msgID := snowflake.GenerateMsgID()
 	return s.messageRepo.Create(&model.ChatMessage{
+		ID:        snowflake.GenerateMsgID(),
 		SessionID: sessionID,
 		MessageID: msgID,
 		Role:      role,
