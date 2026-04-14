@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ticktok-config
+  namespace: ticktok
+data:
+  TICKTOK_MYSQL_HOST: "mysql.infra.svc.cluster.local"
+  TICKTOK_MYSQL_PORT: "3306"
+  TICKTOK_MYSQL_DBNAME: "ticktok"
+  
+  TICKTOK_REDIS_HOST: "redis.infra.svc.cluster.local"
+  TICKTOK_REDIS_PORT: "6379"
+  
+  TICKTOK_MINIO_ENDPOINT: "minio.infra.svc.cluster.local:9000"
+  TICKTOK_MINIO_BUCKET_NAME: "ticktok"
+  TICKTOK_MINIO_USE_SSL: "false"
+  
+  TICKTOK_KAFKA_BROKERS: "kafka.infra.svc.cluster.local:29092"
+  
+  TICKTOK_ETCD_ENDPOINTS: "etcd.infra.svc.cluster.local:2379"
+  
+  TICKTOK_MICROSERVICES_USER: "user:10001"
+  TICKTOK_MICROSERVICES_CONTENT: "content:10002"
+  TICKTOK_MICROSERVICES_MESSAGE: "message:10003"
+  TICKTOK_MICROSERVICES_CHATBOT: "chatbot:10004"
+  
+  TICKTOK_MEDIA_FFMPEG_PATH: "ffmpeg"
+  
+  TICKTOK_LOG_LEVEL: "debug"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ticktok-secret
+  namespace: ticktok
+type: Opaque
+stringData:
+  TICKTOK_MYSQL_PASSWORD: "<YOUR_MYSQL_PASSWORD>"
+  TICKTOK_MYSQL_USER: "root"
+  TICKTOK_MINIO_ACCESS_KEY_ID: "<YOUR_MINIO_ACCESS_KEY_ID>"
+  TICKTOK_MINIO_SECRET_ACCESS_KEY: "<YOUR_MINIO_SECRET_ACCESS_KEY>"
+  TICKTOK_JWT_SECRET: "<YOUR_JWT_SECRET_KEY>"

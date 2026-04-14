@@ -55,3 +55,35 @@ tasks:
     desc: Run chatbot service
     cmds:
       - go run cmd/chatbot/main.go
+
+  build-images:
+    desc: Build all microservice Docker images
+    cmds:
+      - docker build --build-arg SERVICE_NAME=gateway -t ticktok-gateway:latest .
+      - docker build --build-arg SERVICE_NAME=user -t ticktok-user:latest .
+      - docker build --build-arg SERVICE_NAME=content -t ticktok-content:latest .
+      - docker build --build-arg SERVICE_NAME=message -t ticktok-message:latest .
+      - docker build --build-arg SERVICE_NAME=chatbot -t ticktok-chatbot:latest .
+      - docker build --build-arg SERVICE_NAME=worker -t ticktok-worker:latest .
+
+  import-images:
+    desc: Import Docker images into k3d cluster
+    cmds:
+      - k3d image import ticktok-gateway:latest -c ticktok-cluster
+      - k3d image import ticktok-user:latest -c ticktok-cluster
+      - k3d image import ticktok-content:latest -c ticktok-cluster
+      - k3d image import ticktok-message:latest -c ticktok-cluster
+      - k3d image import ticktok-chatbot:latest -c ticktok-cluster
+      - k3d image import ticktok-worker:latest -c ticktok-cluster
+
+  k8s-deploy:
+    desc: Deploy all Kubernetes manifests
+    cmds:
+      - kubectl apply -f deploy/k8s/namespaces.yaml
+      - cmd: cp deploy/k8s/infra/secret.yaml.template deploy/k8s/infra/secret.yaml
+        ignore_error: true
+      - cmd: cp deploy/k8s/ticktok/config.yaml.template deploy/k8s/ticktok/config.yaml
+        ignore_error: true
+      - kubectl apply -f deploy/k8s/infra/
+      - kubectl apply -f deploy/k8s/ticktok/
+

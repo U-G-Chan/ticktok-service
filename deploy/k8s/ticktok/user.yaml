@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+  namespace: ticktok
+spec:
+  ports:
+    - port: 10001
+      targetPort: 10001
+      name: grpc
+  selector:
+    app: user
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+  namespace: ticktok
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user
+  template:
+    metadata:
+      labels:
+        app: user
+    spec:
+      containers:
+        - name: user
+          image: ticktok-user:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 10001
+          envFrom:
+            - configMapRef:
+                name: ticktok-config
+            - secretRef:
+                name: ticktok-secret
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          livenessProbe:
+            tcpSocket:
+              port: 10001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 10001
+            initialDelaySeconds: 5
+            periodSeconds: 10

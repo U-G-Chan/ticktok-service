@@ -15,3 +15,7 @@ data/
 
 config/config.yaml
 
+# Kubernetes Secrets
+deploy/k8s/**/secret.yaml
+deploy/k8s/ticktok/config.yaml
+
