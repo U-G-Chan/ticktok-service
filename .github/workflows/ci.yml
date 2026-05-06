@@ -1,0 +1,33 @@
+name: Service CI
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Verify Go modules
+        run: go mod tidy && git diff --exit-code
+
+      - name: Run unit tests
+        run: go test ./...
+
+      - name: Build all services
+        run: |
+          for svc in gateway user content message chatbot worker; do
+            echo "Building cmd/${svc}"
+            go build ./cmd/${svc}
+          done
