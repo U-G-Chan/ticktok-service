@@ -56,6 +56,11 @@ tasks:
     cmds:
       - go run cmd/chatbot/main.go
 
+  seed-feed:
+    desc: Seed demo feed data into MySQL/MinIO/Redis (one-time)
+    cmds:
+      - go run cmd/seed/main.go
+
   build-images:
     desc: Build all microservice Docker images
     cmds:
@@ -86,4 +91,3 @@ tasks:
         ignore_error: true
       - kubectl apply -f deploy/k8s/infra/
       - kubectl apply -f deploy/k8s/ticktok/
-

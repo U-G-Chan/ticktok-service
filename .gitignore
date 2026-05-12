@@ -13,6 +13,8 @@ bin/
 
 data/
 
+assets/web-public/
+
 config/config.yaml
 
 # Kubernetes Secrets
