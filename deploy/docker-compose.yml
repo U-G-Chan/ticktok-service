@@ -52,7 +52,7 @@ services:
     image: docker.1ms.run/grafana/grafana
     container_name: ticktok-grafana
     ports:
-      - "3000:3000"
+      - "13000:3000"
     depends_on:
       - prometheus
 

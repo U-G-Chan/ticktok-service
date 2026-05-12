@@ -10,18 +10,28 @@ import (
 )
 
 func GetUserInfo(c *gin.Context) {
+	var userId int64
 	userIdStr := c.Query("user_id")
-	userId, err := strconv.ParseInt(userIdStr, 10, 64)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "Invalid user_id"})
-		return
+	if userIdStr != "" {
+		parsed, err := strconv.ParseInt(userIdStr, 10, 64)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "Invalid user_id"})
+			return
+		}
+		userId = parsed
+	} else {
+		userIDRaw, exists := c.Get("userID")
+		if !exists {
+			c.JSON(http.StatusBadRequest, gin.H{"code": 400, "msg": "user_id is required"})
+			return
+		}
+		userId = userIDRaw.(int64)
 	}
 
-	// 从 context 中获取 token 解析出的 user_id (如果中间件已存入)
-	tokenUserId, _ := c.Get("user_id")
+	userIDRaw, _ := c.Get("userID")
 	var tUid int64
-	if tokenUserId != nil {
-		tUid = tokenUserId.(int64)
+	if userIDRaw != nil {
+		tUid = userIDRaw.(int64)
 	}
 
 	resp, err := rpc.GetClientManager().UserClient.GetUserInfo(c.Request.Context(), &user.GetUserInfoRequest{

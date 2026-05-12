@@ -12,6 +12,7 @@ type User struct {
 	UpdatedAt       time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updated_at"`
 	DeletedAt       gorm.DeletedAt `gorm:"column:deleted_at;index" json:"-"`
 	Username        string         `gorm:"column:username;type:varchar(32);not null;uniqueIndex"`
+	Nickname        string         `gorm:"column:nickname;type:varchar(32);default:''"`
 	Password        string         `gorm:"column:password;type:varchar(255);not null"`
 	Role            string         `gorm:"column:role;type:varchar(20);default:'user'"`
 	Avatar          string         `gorm:"column:avatar;type:varchar(255);default:''"`

@@ -52,6 +52,7 @@ func (s *UserService) Register(ctx context.Context, req *user.RegisterRequest) (
 	newUser := &model.User{
 		ID:       snowflake.GenerateMsgID(),
 		Username: req.Username,
+		Nickname: req.Username,
 		Password: hashedPassword,
 		Role:     "user",
 	}
@@ -123,9 +124,13 @@ func (s *UserService) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequ
 		}, nil
 	}
 
+	name := u.Username
+	if u.Nickname != "" {
+		name = u.Nickname
+	}
 	userInfo := &user.User{
 		Id:              int64(u.ID),
-		Name:            u.Username,
+		Name:            name,
 		Avatar:          u.Avatar,
 		BackgroundImage: u.BackgroundImage,
 		Signature:       u.Signature,
@@ -168,6 +173,10 @@ func (s *UserService) MGetUserInfo(ctx context.Context, req *user.MGetUserInfoRe
 
 	var pbUsers []*user.User
 	for _, u := range users {
+		name := u.Username
+		if u.Nickname != "" {
+			name = u.Nickname
+		}
 		isFollow := false
 		if req.TokenUserId > 0 {
 			rel, err := s.relationRepo.GetRelation(req.TokenUserId, int64(u.ID))
@@ -178,7 +187,7 @@ func (s *UserService) MGetUserInfo(ctx context.Context, req *user.MGetUserInfoRe
 
 		pbUsers = append(pbUsers, &user.User{
 			Id:              int64(u.ID),
-			Name:            u.Username,
+			Name:            name,
 			Avatar:          u.Avatar,
 			BackgroundImage: u.BackgroundImage,
 			Signature:       u.Signature,
