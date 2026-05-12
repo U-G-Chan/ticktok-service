@@ -1,0 +1,334 @@
+openapi: 3.0.3
+info:
+  title: ticktok-api
+  version: 1.0.0
+  description: |
+    TickTok Service HTTP API (Gateway).
+
+    约定：
+    - 默认鉴权：Authorization: Bearer <access_token>
+    - Refresh/Logout 使用 refresh_token（请求体 JSON 字段）
+servers:
+  - url: /
+tags:
+  - name: Auth
+    description: 登录注册与 Token
+  - name: Health
+    description: 健康检查与联调速测
+security:
+  - bearerAuth: []
+paths:
+  /api/v1/auth/register:
+    post:
+      tags: [Auth]
+      operationId: authRegister
+      summary: 注册
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+            examples:
+              ok:
+                value:
+                  username: "demo"
+                  password: "demo123"
+      responses:
+        "200":
+          description: 业务成功/失败（通过 code 判断）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+              examples:
+                success:
+                  value:
+                    code: 0
+                    msg: "Success"
+                    user_id: 1
+                    access_token: "eyJhbGciOi..."
+                    refresh_token: "eyJhbGciOi..."
+                businessError:
+                  value:
+                    code: 10001
+                    msg: "username already exists"
+                    user_id: 0
+                    access_token: ""
+                    refresh_token: ""
+        "400":
+          description: 参数校验失败
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                badRequest:
+                  value:
+                    code: 400
+                    msg: "invalid request body"
+        "500":
+          description: 服务端错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                serverError:
+                  value:
+                    code: 500
+                    msg: "internal error"
+
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      operationId: authLogin
+      summary: 登录
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+            examples:
+              ok:
+                value:
+                  username: "demo"
+                  password: "demo123"
+      responses:
+        "200":
+          description: 业务成功/失败（通过 code 判断）
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+              examples:
+                success:
+                  value:
+                    code: 0
+                    msg: "Success"
+                    user_id: 1
+                    access_token: "eyJhbGciOi..."
+                    refresh_token: "eyJhbGciOi..."
+                businessError:
+                  value:
+                    code: 10002
+                    msg: "invalid username or password"
+                    user_id: 0
+                    access_token: ""
+                    refresh_token: ""
+        "400":
+          description: 参数校验失败
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: 服务端错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth]
+      operationId: authLogout
+      summary: 登出（注销 refresh_token）
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRequest"
+            examples:
+              ok:
+                value:
+                  refresh_token: "eyJhbGciOi..."
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LogoutResponse"
+              examples:
+                success:
+                  value:
+                    code: 0
+                    msg: "Logged out successfully"
+        "400":
+          description: 参数校验失败
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: 服务端错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/auth/refresh:
+    post:
+      tags: [Auth]
+      operationId: authRefresh
+      summary: 刷新 access_token（refresh_token 不变）
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TokenRequest"
+            examples:
+              ok:
+                value:
+                  refresh_token: "eyJhbGciOi..."
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RefreshResponse"
+              examples:
+                success:
+                  value:
+                    code: 0
+                    msg: "Success"
+                    access_token: "eyJhbGciOi..."
+                    refresh_token: "eyJhbGciOi..."
+        "400":
+          description: 参数校验失败
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: refresh_token 无效或过期
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                invalid:
+                  value:
+                    code: 401
+                    msg: "Invalid or expired refresh token"
+        "500":
+          description: 服务端错误
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/v1/ping:
+    get:
+      tags: [Health]
+      operationId: ping
+      summary: 速测（鉴权）
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PingResponse"
+              examples:
+                success:
+                  value:
+                    message: "pong"
+                    user_id: 1
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+    RegisterRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+    TokenRequest:
+      type: object
+      required: [refresh_token]
+      properties:
+        refresh_token:
+          type: string
+    AuthResponse:
+      type: object
+      required: [code, msg, user_id, access_token, refresh_token]
+      properties:
+        code:
+          type: integer
+          format: int32
+        msg:
+          type: string
+        user_id:
+          type: integer
+          format: int64
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+    RefreshResponse:
+      type: object
+      required: [code, msg, access_token, refresh_token]
+      properties:
+        code:
+          type: integer
+          format: int32
+        msg:
+          type: string
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+    LogoutResponse:
+      type: object
+      required: [code, msg]
+      properties:
+        code:
+          type: integer
+          format: int32
+        msg:
+          type: string
+    PingResponse:
+      type: object
+      required: [message, user_id]
+      properties:
+        message:
+          type: string
+        user_id:
+          type: integer
+          format: int64
+    ErrorResponse:
+      type: object
+      required: [code, msg]
+      properties:
+        code:
+          type: integer
+          format: int32
+        msg:
+          type: string
